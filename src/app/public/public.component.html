@@ -34,29 +34,32 @@
   <mat-sidenav-container class="sidenav-container" >
     <mat-sidenav
     #drawer
-    class="sidenav"
+    class="sidenav mat-sidenav-width"
     [attr.role]="isHandset ? 'dialog' : 'navigation'"
     [mode]="isHandset ? 'over' : 'side'"
     [opened]="isMenuOpen">
-  
-      <mat-nav-list>
-        <a [routerLink]="['/home']" mat-list-item href="#" routerLinkActive="active">
-          <mat-icon class="center-flex" routerLinkActive="active-icon">home</mat-icon>
-          <span class="ml-2"> Welcome </span>
-        </a>
-        <a [routerLink]="['/profile']" mat-list-item href="#" routerLinkActive="active">
-          <mat-icon class="center-flex" routerLinkActive="active-icon">arrow_drop_down</mat-icon>
-          <span class="ml-2"> Item</span>
-        </a>
-        
-        <a [routerLink]="['/login']" mat-list-item href="#" routerLinkActive="active">
-          <mat-icon class="center-flex" routerLinkActive="active-icon">exit_to_app</mat-icon>
-          <span class="ml-2"> Salir</span>
-        </a>
+    <mat-nav-list>
+        <mat-tree [dataSource]="dataSource" [treeControl]="treeControl" class="mat-tree-space">
+          <mat-tree-node *matTreeNodeDef="let node" matTreeNodePadding>
+            <button mat-button (click)="onItemClick(node)">
+              <mat-icon class="mat-icon-rtl-mirror">
+                {{node.icon}}
+              </mat-icon>
+              {{node.name}}
+            </button>
+          </mat-tree-node>
+          <mat-tree-node *matTreeNodeDef="let node;when: hasChild" matTreeNodePadding>
+            <button mat-button matTreeNodeToggle
+                    [attr.aria-label]="'Toggle ' + node.name" >
+              <mat-icon class="mat-icon-rtl-mirror">
+                {{treeControl.isExpanded(node) ? 'expand_more' : 'chevron_right'}}
+              </mat-icon>
+              {{node.name}}
+            </button>
+          </mat-tree-node>
+        </mat-tree>
       </mat-nav-list>
-      
     </mat-sidenav>
-  
     <mat-sidenav-content  [ngStyle]="{ 'margin-left.px': contentMargin }" >
       <div class="content-page">
         <router-outlet #outlet="outlet"></router-outlet>
