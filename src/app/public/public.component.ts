@@ -2,8 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { FlatTreeControl } from '@angular/cdk/tree';
 import { MatTreeFlatDataSource, MatTreeFlattener } from '@angular/material/tree';
-import { MenuItemFlatNode } from '../core/modules/menuItemFlatNode';
-import { MenuItemNode } from '../core/modules/menuItemNode';
+import { MenuItemFlatNode } from '../core/modules/config-components/menu/menuItemFlatNode';
+import { MenuItemNode } from '../core/modules/config-components/menu/menuItemNode';
 import { MenuService } from '../services/menuService';
 @Component({
     selector:'app-public',

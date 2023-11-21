@@ -14,8 +14,15 @@ import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatButtonModule } from '@angular/material/button';
 import { MatTreeModule } from '@angular/material/tree';
-
-
+import { ButtonsComponent } from "./components/buttons/buttons.component";
+import {MatTableModule} from '@angular/material/table';
+import { TableComponent } from "./components/table/table.component";
+import { CommonModule } from "@angular/common";
+import { MatPaginatorModule,MatPaginatorIntl } from "@angular/material/paginator";
+import { MatPaginatorIntEs } from "../helpers/matPaginatorIntEs";
+import { MatDividerModule } from '@angular/material/divider';
+import { MatDialogModule} from '@angular/material/dialog';
+import { DialogComponent } from "./components/dialog/dialog.component";
 @NgModule({
     imports:[
         HttpClientModule,
@@ -23,14 +30,20 @@ import { MatTreeModule } from '@angular/material/tree';
         MatProgressBarModule,
         FlexLayoutModule,
         FormsModule, MatFormFieldModule, MatInputModule, ReactiveFormsModule,
-        MatFormFieldModule,
         MatListModule,
         MatMenuModule,
         MatIconModule,
         MatToolbarModule,
         MatSidenavModule,
         MatButtonModule,
-        MatTreeModule
+        MatTreeModule,
+        ButtonsComponent,
+        TableComponent,
+        CommonModule,
+        MatPaginatorModule,
+        MatDividerModule,
+        MatDialogModule,
+        DialogComponent,
     ],
     declarations:[
         NotFoundComponent
@@ -42,7 +55,7 @@ import { MatTreeModule } from '@angular/material/tree';
         NotFoundComponent,
         MatProgressBarModule,
         FlexLayoutModule,
-        FormsModule, MatFormFieldModule, MatInputModule, ReactiveFormsModule,
+        FormsModule, MatInputModule, ReactiveFormsModule,
         MatFormFieldModule,
         MatListModule,
         MatMenuModule,
@@ -50,8 +63,19 @@ import { MatTreeModule } from '@angular/material/tree';
         MatToolbarModule,
         MatSidenavModule,
         MatButtonModule,
-        MatTreeModule
-    ]
+        MatTreeModule,
+        ButtonsComponent,
+        MatTableModule,
+        TableComponent,
+        CommonModule,
+        MatPaginatorModule,
+        MatDividerModule,
+        MatDialogModule,
+        DialogComponent,
+    ],
+    providers:[
+        { provide: MatPaginatorIntl, useClass:MatPaginatorIntEs }
+    ],
 })
 
 export class SharedModule{

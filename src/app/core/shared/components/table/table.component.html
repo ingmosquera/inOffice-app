@@ -1,0 +1,24 @@
+<div>
+  <h1 class="text-center">{{configTable.tittle}}</h1>
+  <mat-divider></mat-divider>
+  <mat-form-field class="finder-header">
+    <mat-label>Buscador</mat-label>
+    <input matInput (keyup)="applyFilter($event)" placeholder="Buscador">
+  </mat-form-field>
+</div>
+
+<table mat-table [dataSource]="tableDataSource" class="mat-elevation-z8" matSort> 
+  <ng-container *ngFor="let column of configTable.tableColumns" [matColumnDef]="column.dataKey">
+    <th mat-header-cell [hidden]="column.ishidden" *matHeaderCellDef> {{column.name}}</th>
+    <td mat-cell [hidden]="column.ishidden" *matCellDef="let element; let i=dataIndex;"> {{element[column.dataKey]}}</td>
+  </ng-container>
+  <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+  <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+</table>
+<mat-paginator 
+ [length] ="configTable.totalItems"
+ [pageSize] = "configTable.pageSize"
+ [pageSizeOptions] = "configTable.showPageSizeOptions"
+ (page)="onPageChange($event)"></mat-paginator>
+
+ 
