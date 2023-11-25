@@ -1,0 +1,14 @@
+.category-select{ margin-left: 1%;}
+.button-space{ margin-left: 1%;}
+.mat-mdc-radio-button ~ .mat-mdc-radio-button { margin-left: 5px; }
+#selectedValuesContainer {
+    display: flex;
+    flex-wrap: wrap;
+    gap:8px;
+    border: 1px solid;
+    padding: 8px;
+    border-radius: 4px;
+}
+.tab-group-top{
+    margin-top: 3%;
+}

@@ -1,0 +1,16 @@
+
+<h1 mat-dialog-title>{{ data.title }}</h1>
+<div mat-dialog-content>
+    {{ data.message }}
+</div>
+<div mat-dialog-actions align="center">
+    <ng-container *ngIf="data.confirm">
+        <button mat-raised-button color="accent" (click)="cancel()">Cancelar</button>
+        <button mat-raised-button color="primary" (click)="confirm()">Continuar</button>
+    </ng-container>
+    <ng-container *ngIf="!data.confirm">
+        <button mat-raised-button color="primary" (click)="acept()">Aceptar</button>
+    </ng-container>
+<div>
+
+

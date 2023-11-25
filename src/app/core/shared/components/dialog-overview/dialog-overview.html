@@ -1,0 +1,20 @@
+<h1 mat-dialog-title>{{data.title}}</h1>
+<div mat-dialog-content>
+    <form [formGroup]="dynamicForm">
+        <ng-container *ngFor="let detail of data.fields">
+            <mat-form-field  appearance="fill">
+                <mat-label>{{detail.nameField}}</mat-label>
+                    <input
+                    matInput 
+                    value="{{detail.fieldValue}}"
+                    [formControlName] = "detail.id"
+                >
+            </mat-form-field>
+            <br/>
+        </ng-container>
+    </form>
+</div>
+<div mat-dialog-actions align="center">
+    <button mat-raised-button color="primary" (click)="onSaveData()">Guardar</button>
+    <button mat-raised-button color="accent" (click)="onCancelClick()">Cancelar</button>
+<div>

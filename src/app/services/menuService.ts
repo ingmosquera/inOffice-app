@@ -1,5 +1,5 @@
 import { Injectable } from "@angular/core";
-import { MenuItemNode } from "../core/modules/menuItemNode";
+import { MenuItemNode } from "../core/modules/config-components/menu/menuItemNode";
 
 @Injectable({providedIn: 'root'})
 export class MenuService{

@@ -19,7 +19,7 @@ import { FooterComponent } from "./footer/footer.component";
         MatToolbarModule,
         MatSidenavModule,
         MatButtonModule,
-        MatFormFieldModule
+        MatFormFieldModule,
     ],
     declarations:[
         PublicComponent,

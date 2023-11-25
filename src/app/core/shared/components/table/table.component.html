@@ -1,0 +1,40 @@
+<h1 class="text-center">{{configTable.tittle}}</h1>
+<mat-divider></mat-divider>
+<mat-form-field class="finder-header">
+  <mat-icon matPrefix>search</mat-icon>
+  <mat-label>Buscador</mat-label>
+  <input matInput (keyup)="applyFilter($event)" placeholder="Buscador">
+</mat-form-field>
+
+<mat-table [dataSource]="tableDataSource" class="mat-elevation-z8" matSort
+(matSortChange)="announceSortChange($event)"> 
+  <ng-container *ngFor="let column of configTable.tableColumns" [matColumnDef]="column.dataKey" >
+    <mat-header-cell [hidden]="column.ishidden" *matHeaderCellDef mat-sort-header> {{column.name}}</mat-header-cell>
+    <mat-cell [hidden]="column.ishidden" *matCellDef="let element; let i=dataIndex;"> {{element[column.dataKey]}}</mat-cell>
+  </ng-container>
+  <ng-container *ngIf="configTable.showDetails">
+    <ng-container matColumnDef="action">
+      <mat-header-cell *matHeaderCellDef>Mas info</mat-header-cell>
+      <mat-cell *matCellDef="let element">
+        <button mat-icon-button (click)="showDetails(element)">
+          <mat-icon>info</mat-icon>
+        </button>
+      </mat-cell>
+    </ng-container>
+  </ng-container>
+  <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+  <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+</mat-table>
+
+<mat-paginator 
+ [length] ="configTable.totalItems"
+ [pageSize] = "configTable.pageSize"
+ [pageSizeOptions] = "configTable.showPageSizeOptions"
+ (page)="onPageChange($event)"></mat-paginator>
+
+ <div *ngIf="loadingData" class="spinner-container">
+  <mat-progress-spinner
+    color="primary" 
+    mode="indeterminate">
+  </mat-progress-spinner>
+</div>
