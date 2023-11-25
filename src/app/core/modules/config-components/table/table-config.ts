@@ -3,7 +3,7 @@ export interface TableConfig {
     tittle:string;
     pageSize:number;
     totalItems:number;
-    showDetails?:boolean;
+    showDetails:boolean;
     showPageSizeOptions:number[]
     tableColumns:TableColumn[]
 }

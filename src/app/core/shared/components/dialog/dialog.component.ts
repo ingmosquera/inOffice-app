@@ -1,3 +1,4 @@
+import { CommonModule } from "@angular/common";
 import { Component, EventEmitter, Inject, Output } from "@angular/core";
 import { MAT_DIALOG_DATA, MatDialogRef } from "@angular/material/dialog";
 import { MatButtonModule } from "@angular/material/button";
@@ -7,7 +8,7 @@ import { MatDialogActions, MatDialogClose, MatDialogContent, MatDialogTitle } fr
     selector:'app-dialog',
     templateUrl:'./dialog.component.html',
     standalone:true,
-    imports:[MatButtonModule,MatDialogTitle, MatDialogContent, MatDialogActions, MatDialogClose]
+    imports:[MatButtonModule,MatDialogTitle, MatDialogContent, MatDialogActions, MatDialogClose,CommonModule]
 })
 export class DialogComponent{
     constructor(private dialogRef:MatDialogRef<DialogComponent>,
@@ -24,6 +25,10 @@ export class DialogComponent{
 
     confirm(){
         this.confirmClik.emit();
+        this.dialogRef.close();
+    }
+
+    acept(){
         this.dialogRef.close();
     }
 

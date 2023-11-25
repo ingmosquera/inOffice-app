@@ -4,8 +4,13 @@
     {{ data.message }}
 </div>
 <div mat-dialog-actions align="center">
-    <button mat-raised-button color="accent" (click)="cancel()">Cancelar</button>
-    <button mat-raised-button color="primary" (click)="confirm()">Continuar</button>
+    <ng-container *ngIf="data.confirm">
+        <button mat-raised-button color="accent" (click)="cancel()">Cancelar</button>
+        <button mat-raised-button color="primary" (click)="confirm()">Continuar</button>
+    </ng-container>
+    <ng-container *ngIf="!data.confirm">
+        <button mat-raised-button color="primary" (click)="acept()">Aceptar</button>
+    </ng-container>
 <div>
 
 

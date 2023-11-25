@@ -1,76 +1,301 @@
 import { Injectable } from "@angular/core";
-import { DataItem } from "../core/modules/item/dataItem";
+import { DataItem, HistoryItem,DetailItem  } from "../core/modules/item/dataItem";
 import { ListPaginationResponse } from "../core/Response/listPaginationResponse";
-import { PeriodicElement } from "../core/modules/item/periodicElement";
 import { Observable, of } from "rxjs";
-
+import { DetailRemittance } from "../core/modules/remesas/remittance";
 
 @Injectable({providedIn: 'root'})
 
 export class ItemService{
-    ELEMENT_DATA: PeriodicElement[] = [
-        {position: 1, name: 'Hydrogen', weight: 1.0079, symbol: 'H'},
-        {position: 2, name: 'Helium', weight: 4.0026, symbol: 'He'},
-        {position: 3, name: 'Lithium', weight: 6.941, symbol: 'Li'},
-        {position: 4, name: 'Beryllium', weight: 9.0122, symbol: 'Be'},
-        {position: 5, name: 'Boron', weight: 10.811, symbol: 'B'},
-        {position: 6, name: 'Carbon', weight: 12.0107, symbol: 'C'},
-        {position: 7, name: 'Nitrogen', weight: 14.0067, symbol: 'N'},
-        {position: 8, name: 'Oxygen', weight: 15.9994, symbol: 'O'},
-        {position: 9, name: 'Fluorine', weight: 18.9984, symbol: 'F'},
-        {position: 10, name: 'Neon', weight: 20.1797, symbol: 'Ne'},
-        {position: 11, name: 'Prueba', weight: 5.6369, symbol: 'Od'},
+    private ELEMEN_DETAIL_DATA:DetailItem[] = [
+        {
+            createDate:new Date(),
+            fieldValue :"Valor 1",
+            id : 2,
+            item: '2',
+            modifiedDate:new Date(),
+            nameField:"Nombre 2",
+            userCreate : "UserCreate 2",
+            userModified :"UserModified 2",
+            urlImageItem : "con imagen"
+        },
+        {
+            createDate:new Date(),
+            fieldValue :"Valor 3",
+            id : 3,
+            item: "3",
+            modifiedDate:new Date(),
+            nameField:"Nombre 3",
+            userCreate : "UserCreate 3",
+            userModified :"UserModified 3",
+            urlImageItem : 'Sin imagen'
+
+        },
+        {
+            createDate:new Date(),
+            fieldValue :"Valor 1",
+            id : 1,
+            item: '1',
+            modifiedDate:new Date(),
+            nameField:"Nombre 1",
+            userCreate : "UserCreate 1",
+            userModified :"UserModified 1",
+            urlImageItem : 'Sin imagen'
+
+        }
     ];
 
-    getItems(filter:string,startPage:number,endPage:number):DataItem[]{
+    private getItems(filter:string,startPage:number,endPage:number):DataItem[]{
         return [
             {
-                Client:"123456",
-                Status:0,
-                ItemType:"",
-                Ubication:"string",
-                Line:"string",
+                client:"1",
+                status:0,
+                itemType:"",
+                ubication:"string",
+                line:"string",
                 branch:"string",
-                Item:"", 
-                UserCreate:"", 
-                CreateDate:new Date(), 
-                UserModified:"",
-                ModifiedDate: new Date()
+                item:"", 
+                userCreate:"", 
+                createDate:new Date(), 
+                userModified:"",
+                modifiedDate: new Date()
             },
             {
-                Client:"123456",
-                Status:0,
-                ItemType:"",
-                Ubication:"string",
-                Line:"string",
+                client:"2",
+                status:0,
+                itemType:"",
+                ubication:"string",
+                line:"string",
                 branch:"string",
-                Item:"", 
-                UserCreate:"", 
-                CreateDate:new Date(), 
-                UserModified:"",
-                ModifiedDate: new Date()
+                item:"2", 
+                userCreate:"", 
+                createDate:new Date(), 
+                userModified:"",
+                modifiedDate: new Date()
             },
             {
-                Client:"123456",
-                Status:0,
-                ItemType:"",
-                Ubication:"string",
-                Line:"string",
+                client:"cliente 3",
+                status:0,
+                itemType:"",
+                ubication:"string",
+                line:"string",
                 branch:"string",
-                Item:"", 
-                UserCreate:"", 
-                CreateDate:new Date(), 
-                UserModified:"",
-                ModifiedDate: new Date()
+                item:"3", 
+                userCreate:"", 
+                createDate:new Date(), 
+                userModified:"",
+                modifiedDate: new Date()
+            },
+            {
+                client:"cliente 4",
+                status:0,
+                itemType:"",
+                ubication:"string",
+                line:"string",
+                branch:"string",
+                item:"4", 
+                userCreate:"", 
+                createDate:new Date(), 
+                userModified:"",
+                modifiedDate: new Date()
+            },
+            {
+                client:"5",
+                status:0,
+                itemType:"",
+                ubication:"string",
+                line:"string",
+                branch:"string",
+                item:"5", 
+                userCreate:"", 
+                createDate:new Date(), 
+                userModified:"",
+                modifiedDate: new Date()
+            },
+            {
+                client:"Cliente 6",
+                status:0,
+                itemType:"",
+                ubication:"string",
+                line:"string",
+                branch:"string",
+                item:"6", 
+                userCreate:"", 
+                createDate:new Date(), 
+                userModified:"",
+                modifiedDate: new Date()
+            },
+            {
+                client:"Cliente 7",
+                status:0,
+                itemType:"",
+                ubication:"string",
+                line:"string",
+                branch:"string",
+                item:"7", 
+                userCreate:"", 
+                createDate:new Date(), 
+                userModified:"",
+                modifiedDate: new Date()
+            },
+            {
+                client:"Cliente 8",
+                status:0,
+                itemType:"",
+                ubication:"string",
+                line:"string",
+                branch:"string",
+                item:"8", 
+                userCreate:"", 
+                createDate:new Date(), 
+                userModified:"",
+                modifiedDate: new Date()
+            },
+            {
+                client:"Cliente 9",
+                status:0,
+                itemType:"",
+                ubication:"string",
+                line:"string",
+                branch:"string",
+                item:"9", 
+                userCreate:"", 
+                createDate:new Date(), 
+                userModified:"",
+                modifiedDate: new Date()
+            },
+            {
+                client:"Cliente 10",
+                status:0,
+                itemType:"",
+                ubication:"string",
+                line:"string",
+                branch:"string",
+                item:"10", 
+                userCreate:"", 
+                createDate:new Date(), 
+                userModified:"",
+                modifiedDate: new Date()
+            },
+            {
+                client:"Cliente 11",
+                status:0,
+                itemType:"",
+                ubication:"string",
+                line:"string",
+                branch:"string",
+                item:"11", 
+                userCreate:"", 
+                createDate:new Date(), 
+                userModified:"",
+                modifiedDate: new Date()
             }
         ];
     }
 
-    getItemsTest(filter:string,startPage:number,endPage:number):Observable<ListPaginationResponse<PeriodicElement[]>>{
-        const paginatedData = this.ELEMENT_DATA.slice(startPage,endPage);
+    private getItemHistory():HistoryItem[]{
+        return [
+            {
+                item:"1",
+                changeType:1,
+                changeTypeName:"Cambio 1",
+                createDate:new Date(),
+                modifiedDate:new Date(),
+                newValue:"New value",
+                oldValue:"Old value",
+                userCreate:"User Create",
+                userModified:"User Modified"
+            },
+            {
+                item:"2",
+                changeType:1,
+                changeTypeName:"Cambio 2",
+                createDate:new Date(),
+                modifiedDate:new Date(),
+                newValue:"New value",
+                oldValue:"Old value",
+                userCreate:"User Create",
+                userModified:"User Modified"
+            },
+            {
+                item:"3",
+                changeType:3,
+                changeTypeName:"Cambio 3",
+                createDate:new Date(),
+                modifiedDate:new Date(),
+                newValue:"New value",
+                oldValue:"Old value",
+                userCreate:"User Create",
+                userModified:"User Modified"
+            },
+        ];
+    }
+
+    private getRemittanceByItem():DetailRemittance[]{
+        return [
+            {
+                item:"1",
+                idRemittance:1,
+                createDate:new Date(),
+                modifiedDate:new Date(),
+                destroyed:false,
+                permanentOut:false,
+                userCreate:"User",
+                userModified:"USer"
+            },
+            {
+                item:"2",
+                idRemittance:2,
+                createDate:new Date(),
+                modifiedDate:new Date(),
+                destroyed:false,
+                permanentOut:false,
+                userCreate:"User",
+                userModified:"USer"
+            },
+            {
+                item:"3",
+                idRemittance:1,
+                createDate:new Date(),
+                modifiedDate:new Date(),
+                destroyed:false,
+                permanentOut:false,
+                userCreate:"User",
+                userModified:"USer"
+            },
+        ];
+    }
+    
+
+    getItem(filter:string,startPage:number,endPage:number):Observable<ListPaginationResponse<DataItem[]>>{
+        const lista = this.getItems(filter,startPage,endPage);
+        const paginatedData = lista.slice(startPage,endPage);
         const result = {
             result :paginatedData,
-            totalItems :this.ELEMENT_DATA.length
+            totalItems :lista.length
+        }
+        return of(result);
+    }
+
+    getItemDetail(item:string):Observable<DetailItem[]>{
+       const result = this.ELEMEN_DETAIL_DATA.filter((data)=> data.item==item);
+        return of(result)
+    }
+
+    getItemDetailRemittance(item:string,startPage:number,endPage:number):Observable<ListPaginationResponse<DetailRemittance[]>>{
+        const lista = this.getRemittanceByItem().filter((data)=> data.item==item);
+        const result = {
+            result :lista,
+            totalItems :lista.length
+        }
+        return of(result);
+    }
+
+    getHistoryItem(item:string,startPage:number,endPage:number):Observable<ListPaginationResponse<HistoryItem[]>>{
+        const lista = this.getItemHistory().filter((data)=> data.item==item);
+        const result = {
+            result :lista,
+            totalItems :lista.length
         }
         return of(result);
     }

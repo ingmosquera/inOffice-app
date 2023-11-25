@@ -15,7 +15,7 @@ import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatButtonModule } from '@angular/material/button';
 import { MatTreeModule } from '@angular/material/tree';
 import { ButtonsComponent } from "./components/buttons/buttons.component";
-import {MatTableModule} from '@angular/material/table';
+import { MatTableModule} from '@angular/material/table';
 import { TableComponent } from "./components/table/table.component";
 import { CommonModule } from "@angular/common";
 import { MatPaginatorModule,MatPaginatorIntl } from "@angular/material/paginator";
@@ -23,6 +23,12 @@ import { MatPaginatorIntEs } from "../helpers/matPaginatorIntEs";
 import { MatDividerModule } from '@angular/material/divider';
 import { MatDialogModule} from '@angular/material/dialog';
 import { DialogComponent } from "./components/dialog/dialog.component";
+import { MatSortModule } from "@angular/material/sort";
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatExpansionModule } from '@angular/material/expansion';
+import { MatSelectModule } from '@angular/material/select';
+import { MatRadioModule } from '@angular/material/radio';
+import { MatTabsModule } from '@angular/material/tabs';
 @NgModule({
     imports:[
         HttpClientModule,
@@ -44,6 +50,12 @@ import { DialogComponent } from "./components/dialog/dialog.component";
         MatDividerModule,
         MatDialogModule,
         DialogComponent,
+        MatSortModule,
+        MatProgressSpinnerModule,
+        MatExpansionModule,
+        MatSelectModule,
+        MatRadioModule,
+        MatTabsModule,
     ],
     declarations:[
         NotFoundComponent
@@ -72,6 +84,12 @@ import { DialogComponent } from "./components/dialog/dialog.component";
         MatDividerModule,
         MatDialogModule,
         DialogComponent,
+        MatSortModule,
+        MatProgressSpinnerModule,
+        MatExpansionModule,
+        MatSelectModule,
+        MatRadioModule,
+        MatTabsModule,
     ],
     providers:[
         { provide: MatPaginatorIntl, useClass:MatPaginatorIntEs }

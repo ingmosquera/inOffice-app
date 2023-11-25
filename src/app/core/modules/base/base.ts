@@ -1,6 +1,6 @@
 export interface Base{
-    UserCreate:string,
-    CreateDate:Date,
-    UserModified:string,
-    ModifiedDate:Date
+    userCreate:string,
+    createDate:Date,
+    userModified:string,
+    modifiedDate:Date
 }
