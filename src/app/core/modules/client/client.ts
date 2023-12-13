@@ -2,14 +2,11 @@ import { Base } from "../base/base";
 
 export interface Client extends Base{
     id:string,
-    name:string,
-    address:string,
-    city:string,
-    active:boolean
+    name:string
 }
 
 export interface FieldByClient{
+    id:number,
     name:string,
-    dataBaseName:string,
-    client:string
+    clientId:string,
 }

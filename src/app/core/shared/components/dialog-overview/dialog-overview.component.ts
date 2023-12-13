@@ -2,7 +2,7 @@ import { Component, EventEmitter, Inject, Input, Output } from "@angular/core";
 import { DetailItem } from "../../../modules/item/dataItem";
 import { MatButtonModule } from "@angular/material/button";
 import { MAT_DIALOG_DATA, MatDialogActions, MatDialogContent, MatDialogRef, MatDialogTitle } from "@angular/material/dialog";
-import { CommonModule } from "@angular/common";
+import { CommonModule, DatePipe } from "@angular/common";
 import { MatFormFieldModule } from "@angular/material/form-field";
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from "@angular/forms";
 import { MatInputModule } from "@angular/material/input";
@@ -29,7 +29,7 @@ export class DialogOverViewComponent{
     private createFormGroup():void {
         const group:any={};
         this.data.fields.forEach((field:DetailItem)=> {
-            group[field.id] = [field.fieldValue, Validators.required];
+            group[field.fieldId] = [field.value, Validators.required];
         });
         this.dynamicForm = this.fb.group(group);
     }
@@ -42,15 +42,19 @@ export class DialogOverViewComponent{
         var updateFields:DetailItem[]=[];
         for(const field of this.data.fields){
             const updateField:DetailItem = {
-                id:field.id,
-                fieldValue:this.dynamicForm.get(field.id.toString())?.value,
-                createDate : field.createDate,
                 item: field.item,
-                nameField:field.mameField,
-                modifiedDate: new Date(),
-                userCreate : field.userCreate,
-                userModified:"BlaBlaBla",
-                urlImageItem:field.urlImageItem
+                fieldId:field.fieldId,
+                filedName:field.filedName,
+                value:this.dynamicForm.get(field.fieldId.toString())?.value,
+                urlImage:field.urlImageItem,
+                userCreated:field.userCreated,
+                userNameCreated:field.userNameCreated,
+                dateCreated:field.userNameCreated,
+                timeCreated:field.timeCreated,
+                userModified:"CodigoID",
+                userNameModified:"Juadores ",
+                dateModified:field.dateModified,
+                timeModified:field.timeModified
             };
             updateFields= [updateField,...updateFields];
         }

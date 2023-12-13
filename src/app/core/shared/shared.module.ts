@@ -1,7 +1,6 @@
-import { HttpClientModule } from "@angular/common/http";
+import { HTTP_INTERCEPTORS, HttpClientModule } from "@angular/common/http";
 import { NgModule } from "@angular/core";
 import { RouterModule } from "@angular/router";
-import { NotFoundComponent } from "./components/not-found/not-found.component";
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { FlexLayoutModule } from '@angular/flex-layout';
 import { FormsModule, ReactiveFormsModule} from '@angular/forms';
@@ -14,21 +13,26 @@ import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatButtonModule } from '@angular/material/button';
 import { MatTreeModule } from '@angular/material/tree';
-import { ButtonsComponent } from "./components/buttons/buttons.component";
 import { MatTableModule} from '@angular/material/table';
-import { TableComponent } from "./components/table/table.component";
 import { CommonModule } from "@angular/common";
 import { MatPaginatorModule,MatPaginatorIntl } from "@angular/material/paginator";
 import { MatPaginatorIntEs } from "../helpers/matPaginatorIntEs";
 import { MatDividerModule } from '@angular/material/divider';
 import { MatDialogModule} from '@angular/material/dialog';
-import { DialogComponent } from "./components/dialog/dialog.component";
 import { MatSortModule } from "@angular/material/sort";
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { MatSelectModule } from '@angular/material/select';
 import { MatRadioModule } from '@angular/material/radio';
 import { MatTabsModule } from '@angular/material/tabs';
+
+import { SpinnerComponent } from "./components/spinner/spinner.component";
+import { SpinnerInterceptor } from "../../Interceptor/spinner.interceptor";
+import { NotFoundComponent } from "./components/not-found/not-found.component";
+import { DialogComponent } from "./components/dialog/dialog.component";
+import { TableComponent } from "./components/table/table.component";
+import { ButtonsComponent } from "./components/buttons/buttons.component";
+
 @NgModule({
     imports:[
         HttpClientModule,
@@ -56,6 +60,7 @@ import { MatTabsModule } from '@angular/material/tabs';
         MatSelectModule,
         MatRadioModule,
         MatTabsModule,
+        SpinnerComponent,
     ],
     declarations:[
         NotFoundComponent
@@ -90,6 +95,7 @@ import { MatTabsModule } from '@angular/material/tabs';
         MatSelectModule,
         MatRadioModule,
         MatTabsModule,
+        SpinnerComponent,
     ],
     providers:[
         { provide: MatPaginatorIntl, useClass:MatPaginatorIntEs }

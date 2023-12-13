@@ -3,14 +3,20 @@
     <form [formGroup]="dynamicForm">
         <ng-container *ngFor="let detail of data.fields">
             <mat-form-field  appearance="fill">
-                <mat-label>{{detail.nameField}}</mat-label>
+                <mat-label>{{detail.filedName}}</mat-label>
                     <input
                     matInput 
-                    value="{{detail.fieldValue}}"
-                    [formControlName] = "detail.id"
+                    value="{{detail.value}}"
+                    [formControlName] = "detail.fieldId"
                 >
             </mat-form-field>
             <br/>
+        </ng-container>
+        <ng-container *ngIf="data.urlImage!=null">
+            Si tiene imagen
+        </ng-container>
+        <ng-container *ngIf="data.urlImage==null">
+            No tiene imagen
         </ng-container>
     </form>
 </div>

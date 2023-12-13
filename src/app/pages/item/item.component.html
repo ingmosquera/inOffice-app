@@ -1,4 +1,5 @@
 
+<app-spinner></app-spinner>
 <h1 class="text-center">CONSULTA ITEMS</h1>
 <mat-accordion>
     <mat-expansion-panel (opened)="panelOpenState = true"
@@ -29,7 +30,7 @@
         <mat-label>Campos por cliente</mat-label>
         <mat-select [(ngModel)]="selectedFieldClientValue" name="Fields">
           @for (field of fieldByClient; track field) {
-            <mat-option [value]="field.dataBaseName">{{field.name}}</mat-option>
+            <mat-option [value]="field.name">{{field.name}}</mat-option>
           }
         </mat-select>
       </mat-form-field>

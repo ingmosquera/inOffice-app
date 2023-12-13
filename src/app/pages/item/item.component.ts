@@ -3,20 +3,20 @@ import { SharedModule } from "../../core/shared/shared.module";
 import { pagination } from "../../core/constants/constants";
 import { ItemService } from "../../services/itemService";
 
-import { ListPaginationResponse } from "../../core/Response/listPaginationResponse";
+import { ListPaginationResponse } from "../../core/Response/response";
 import { TableConfig } from "../../core/modules/config-components/table/table-config";
 import { ConfigComponents } from "../../core/helpers/configComponents";
 import { MatDialog } from "@angular/material/dialog";
 import { DialogComponent } from "../../core/shared/components/dialog/dialog.component";
 import { DialogOverViewComponent } from "../../core/shared/components/dialog-overview/dialog-overview.component";
-import { DetailItem, HistoryItem } from "../../core/modules/item/dataItem";
+import { DetailItem, MovementItem } from "../../core/modules/item/dataItem";
 import { MatExpansionModule } from "@angular/material/expansion";
 import { Client, FieldByClient } from "../../core/modules/client/client";
 import { ClientService } from "../../services/clientService";
 import { DataItem } from "../../core/modules/item/dataItem";
 import { TableColumns } from "../../core/helpers/tableColums";
 import { MatTabsModule } from "@angular/material/tabs";
-import { DetailRemittance, Remittance } from "../../core/modules/remesas/remittance";
+import { DetailRemittance } from "../../core/modules/remesas/remittance";
 
 @Component({
     selector: 'app-item',
@@ -31,7 +31,7 @@ export class ItemComponent implements OnInit {
     configHistoryTable!:TableConfig;
     configRemittanceTable!:TableConfig;
     dataSourceItem! : DataItem[];
-    dataSourceHistory! : HistoryItem[];
+    dataSourceHistory! : MovementItem[];
     dataSourceRemittance! : DetailRemittance[];
     dataResponse !:ListPaginationResponse<DataItem[]>;
     totalItems!:number;
@@ -79,39 +79,50 @@ export class ItemComponent implements OnInit {
 
     
     showItemData(page:number,pageSize:number):void{
-        this.loadingData=true;
-        const startIndex = (page-1) * pageSize;
+        const startIndex = (page-1) * pageSize==0?1:(page-1) * pageSize;
         const endIndex = startIndex + pageSize;
-        this.itemService.getItem(this.hiddenfilter,startIndex,endIndex).subscribe((data)=>{
-            this.dataSourceItem = data.result;
-            this.totalItems = data.totalItems;        
+        this.itemService.getItem(this.hiddenfilter,startIndex,endIndex).subscribe(data=>{
+            if(data.result.totalRegisters ==0)
+                return this.showMessage("No se encontró información con los parámetros ingresados.");
+
+                this.dataSourceItem = data.result.data;
+            this.totalItems = data.result.totalRegisters;        
             this.loadingData=false;
+        },
+        error => {
+            const message = error.error.errorMessage==null?"Error al procesar la solicitd":error.error.errorMessage;
+            this.showMessage(message);
         });
-
-
+        
         this.setConfigItemTable();
     }
 
     showHistoryData(page:number,pageSize:number,item:string):void{
-        this.loadingData=true;
-        const startIndex = (page-1) * pageSize;
+        const startIndex = page;//(page-1) * pageSize;
         const endIndex = startIndex + pageSize;
-        this.itemService.getHistoryItem(item,startIndex,endIndex).subscribe((data)=>{
-            this.dataSourceHistory = data.result;
-            this.totalItems = data.totalItems;        
+        this.itemService.getMovementItem(item,startIndex,endIndex).subscribe((data)=>{
+            this.totalItems = data.result.totalRegisters;        
             this.loadingData=false;
+            this.dataSourceHistory = data.result.data;
+        },
+        error => {
+            const message = error.error.errorMessage==null?"Error al procesar la solicitd":error.error.errorMessage;
+            this.showMessage(message);
         });
         this.setConfigHistoryTable();
     }
 
     showRemittanceData(page:number,pageSize:number,item:string):void{
-        this.loadingData=true;
-        const startIndex = (page-1) * pageSize;
+        const startIndex = page;//(page-1) * pageSize;
         const endIndex = startIndex + pageSize;
-        this.itemService.getItemDetailRemittance(item,startIndex,endIndex).subscribe((data)=>{
-            this.dataSourceRemittance = data.result;
-            this.totalItems = data.totalItems;        
+        this.itemService.getItemDetailRemittance(item,startIndex,endIndex).subscribe(data=>{
+            this.dataSourceRemittance = data.result.data;
+            this.totalItems = data.result.totalRegisters;        
             this.loadingData=false;
+        },
+        error => {
+            const message = error.error.errorMessage==null?"Error al procesar la solicitd":error.error.errorMessage;
+            return this.showMessage(message);
         });
         this.setConfigRemittanceTable();
     }
@@ -163,12 +174,17 @@ export class ItemComponent implements OnInit {
     onDataSelected(element:any):void{
         const result:DataItem = JSON.parse(JSON.stringify(element));
         this.itemService.getItemDetail(result.item).subscribe((data)=>{
-            if (data.length==0)
+            console.log("El resultado es ",data);
+            if (data.result.length==0)
                 return this.showMessage("No se encontró detalle del item "+ result.item);
             
             this.showHistoryData(pagination.PAGE_NUMBER,pagination.PAGE_SIZE,result.item);
             this.showRemittanceData(pagination.PAGE_NUMBER,pagination.PAGE_SIZE,result.item);
-            this.openDialog(data,result.item);
+            this.openDialog(data.result,result.item);
+        },
+        error => {
+            const message = error.error.errorMessage==null?"Error al procesar la solicitd":error.error.errorMessage;
+            return this.showMessage(message);
         });
     }
 
@@ -182,6 +198,7 @@ export class ItemComponent implements OnInit {
         });
 
         dialogRef.componentInstance.saveInfo.subscribe((data)=>{
+            console.log("Data para salvar",data);
             this.dialog.open(DialogComponent,{
                 disableClose:false,
                 data:{
@@ -194,16 +211,25 @@ export class ItemComponent implements OnInit {
     }
 
     getClientList():void{
-        this.clientService.getClientActive().subscribe((data:Client[])=>{
-            this.clienteList = data;
-        });
+        this.clientService.getClientActive().subscribe(
+            data => {
+                this.clienteList = data.result;
+            },
+            error => {
+                const message = error.error.errorMessage==null?"Error al procesar la solicitd":error.error.errorMessage;
+                this.showMessage(message);
+            });
     }
 
     onSelectionChangeFileds(){
         if (this.selectedClientValue!=null){
-            this.clientService.getFieldByCustomer(this.selectedClientValue).subscribe((data:FieldByClient[])=>{
-                this.fieldByClient = data;
+            this.clientService.getFieldByClient(this.selectedClientValue).subscribe(data=>{
                 this.selectedFieldClientValue = "";    
+                this.fieldByClient = data.result;
+            },
+            error => {
+                const message = error.error.errorMessage==null?"Error al procesar la solicitd":error.error.errorMessage;
+                this.showMessage(message);
             });
         }
     }
@@ -218,7 +244,7 @@ export class ItemComponent implements OnInit {
         });
     }
     addDataOnFilter(){
-        
+
         if (this.selectedClientValue.length==0)
             return this.showMessage("Debe seleccionar un cliente de la lista");
         
@@ -231,12 +257,11 @@ export class ItemComponent implements OnInit {
         const clienteName= this.clienteList.filter((client:Client)=> client.id==this.selectedClientValue)
                                            .map((client)=> client.name);
 
-        const filedName = this.fieldByClient.filter((field:FieldByClient)=> field.dataBaseName==this.selectedFieldClientValue)
+        const filedName = this.fieldByClient.filter((field:FieldByClient)=> field.name==this.selectedFieldClientValue)
                                            .map((field)=> field.name);
 
-        const fieldDatabase = this.fieldByClient.filter((field:FieldByClient)=> field.dataBaseName==this.selectedFieldClientValue)
-                                            .map((field)=> field.dataBaseName);
-        
+        const idField = this.fieldByClient.filter((field:FieldByClient)=> field.name==this.selectedFieldClientValue)
+                                            .map((field)=> field.id);                                            
         
         if (this.valuesfilter.length==0){
             if(this.selectedFieldClientValue.length >0 && this.valueParameter.length>0){
@@ -255,16 +280,16 @@ export class ItemComponent implements OnInit {
 
         if (this.hiddenfilter.length==0){
             if(this.selectedFieldClientValue.length >0 && this.valueParameter.length>0){
-                this.hiddenfilter= `id = ${this.selectedClientValue} ${this.selectedOption} ${fieldDatabase} = ${this.valueParameter}`;
+                this.hiddenfilter= `idClient = '${this.selectedClientValue}' ${this.selectedOption} value = '${this.valueParameter}'  ${this.selectedOption} field=${idField[0]}`;
             }else{
-                this.hiddenfilter= `id = ${this.selectedClientValue}`;
+                this.hiddenfilter= `idClient = '${this.selectedClientValue}'`;
             }
         }
         else{
             if(this.selectedFieldClientValue.length >0 && this.valueParameter.length > 0){
-                this.hiddenfilter=`${this.hiddenfilter} and id = ${this.selectedClientValue} ${this.selectedOption} ${fieldDatabase} = ${this.valueParameter}`;
+                this.hiddenfilter=`${this.hiddenfilter} or idClient= '${this.selectedClientValue}' ${this.selectedOption} value= '${this.valueParameter}'  ${this.selectedOption} field=${idField[0]}`;
             }else{
-                this.hiddenfilter= `${this.hiddenfilter} and id = ${this.selectedClientValue}`;
+                this.hiddenfilter= `${this.hiddenfilter} or idClient = '${this.selectedClientValue}'`;
             }
         }
     }
@@ -274,6 +299,9 @@ export class ItemComponent implements OnInit {
     }
 
     getDataIntem():void{
+        
         this.showItemData(pagination.PAGE_NUMBER,pagination.PAGE_SIZE)
     }
+
+
 }
