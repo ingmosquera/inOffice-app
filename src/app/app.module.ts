@@ -6,6 +6,7 @@ import { AppComponent } from './app.component';
 import { CoreModule } from './core/core.module';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { SpinnerInterceptor } from './Interceptor/spinner.interceptor';
+import { FlexLayoutModule } from '@angular/flex-layout';
 
 @NgModule({
   declarations: [
@@ -16,7 +17,8 @@ import { SpinnerInterceptor } from './Interceptor/spinner.interceptor';
     AppRoutingModule,
     CoreModule,
     BrowserAnimationsModule,
-    HttpClientModule
+    HttpClientModule,
+    FlexLayoutModule
   ],
   providers: [
     { provide:HTTP_INTERCEPTORS, useClass:SpinnerInterceptor,multi:true}],

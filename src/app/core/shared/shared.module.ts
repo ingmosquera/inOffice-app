@@ -1,4 +1,4 @@
-import { HTTP_INTERCEPTORS, HttpClientModule } from "@angular/common/http";
+import { HttpClientModule } from "@angular/common/http";
 import { NgModule } from "@angular/core";
 import { RouterModule } from "@angular/router";
 import { MatProgressBarModule } from '@angular/material/progress-bar';
@@ -27,7 +27,6 @@ import { MatRadioModule } from '@angular/material/radio';
 import { MatTabsModule } from '@angular/material/tabs';
 
 import { SpinnerComponent } from "./components/spinner/spinner.component";
-import { SpinnerInterceptor } from "../../Interceptor/spinner.interceptor";
 import { NotFoundComponent } from "./components/not-found/not-found.component";
 import { DialogComponent } from "./components/dialog/dialog.component";
 import { TableComponent } from "./components/table/table.component";

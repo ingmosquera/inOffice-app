@@ -1,0 +1,117 @@
+<app-spinner></app-spinner>
+<h1 class="text-center">GESTION DE CLIENTES</h1>
+<mat-accordion>
+    <mat-expansion-panel (opened)="panelOpenState = true"
+                         (closed)="panelOpenState = false">
+      <mat-expansion-panel-header>
+        <mat-panel-title>
+          Datos principales del cliente
+        </mat-panel-title>
+        <mat-panel-description>
+          <ng-container *ngIf="!panelOpenState">
+                Despliegue para ver la información del cliente
+          </ng-container>
+        </mat-panel-description>
+      </mat-expansion-panel-header>
+      <form (ngSubmit)="onSubmit()" [formGroup]="clienteAddForm">
+        <div fxLayout="row wrap" fxLayoutGap="16px">
+            <mat-form-field fxFlex="15%">
+                <mat-label>Codigo</mat-label>
+                <input matInput placeholder="Cliente código" formControlName="id">
+            </mat-form-field>
+            
+            <mat-form-field fxFlex="15%">
+                <mat-label>Principal</mat-label>
+                <input matInput placeholder="Cliente Principal" formControlName="parent">
+            </mat-form-field>
+        
+            <mat-form-field fxFlex="25%">
+                <mat-label>Nivel</mat-label>
+                <mat-select formControlName="level">
+                    <mat-option value="1">Principal</mat-option>
+                    <mat-option value="2">Subcuenta</mat-option>
+                </mat-select>
+            </mat-form-field>
+        
+            <mat-form-field fxFlex="50%">
+                <mat-label>Nombre</mat-label>
+                <input matInput placeholder="Cliente Nombre" formControlName="name">
+            </mat-form-field>
+        
+            <mat-form-field fxFlex="45%">
+                <mat-label>Dirección</mat-label>
+                <input matInput placeholder="Cliente Dirección" formControlName="address">
+            </mat-form-field>
+        
+            <mat-form-field fxFlex="40%">
+                <mat-label>Contacto</mat-label>
+                <input matInput placeholder="Cliente Contacto" formControlName="contact">
+            </mat-form-field>
+        
+            <mat-form-field fxFlex="30%">
+                <mat-label>Email</mat-label>
+                <input type="email" matInput placeholder="Cliente Correo" formControlName="email">
+            </mat-form-field>
+        
+            <mat-form-field fxFlex="23%">
+                <mat-label>Teléfono</mat-label>
+                <input matInput placeholder="Cliente Teléfono" formControlName="phone">
+            </mat-form-field>
+        
+            <mat-form-field fxFlex="25%">
+                <mat-label>Sucursal</mat-label>
+                <mat-select formControlName="branch">
+                    <mat-option value="1">Bogota</mat-option>
+                    <mat-option value="2">Cali</mat-option>
+                    <mat-option value="2">Medellin</mat-option>
+                </mat-select>
+            </mat-form-field>
+        
+            <div fxFlex="25%">
+                <div style="margin-top: 5%;">
+                    <label>Activo: </label>
+                    <mat-radio-group formControlName="active">
+                        <mat-radio-button value="Y">Si</mat-radio-button>
+                        <mat-radio-button value="N">No</mat-radio-button>
+                    </mat-radio-group>
+                </div>
+            </div>
+        </div>
+        <button mat-raised-button color="primary" class="float-center" [disabled]="clienteAddForm.invalid">{{labelButton}}</button>
+        <h5>Los campos con * (asterisco) son obligatorios</h5>
+    </form>
+    </mat-expansion-panel>
+  </mat-accordion>
+
+  <mat-accordion>
+    <mat-expansion-panel (opened)="panelOpenDetailState = true"
+                         (closed)="panelOpenDetailState = false"
+                         class="mt-4"
+                         >
+      <mat-expansion-panel-header>
+        <mat-panel-title>
+          Detalle del cliente
+        </mat-panel-title>
+        <mat-panel-description>
+          <ng-container *ngIf="!panelOpenDetailState">
+                Despliegue para ver el detalle del cliente
+          </ng-container>
+        </mat-panel-description>
+      </mat-expansion-panel-header>
+      
+      <mat-tab-group preserveContent class="tab-group-top">
+        <mat-tab label="Tipos de item">
+            <app-client-item-type/>
+        </mat-tab>
+        <mat-tab label="Solicitantes">
+          <app-client-request/>
+        </mat-tab>
+        <mat-tab label="Direcciones entrega">
+          <app-client-address-request/>
+        </mat-tab>
+      </mat-tab-group>
+    </mat-expansion-panel>
+  </mat-accordion>
+
+
+

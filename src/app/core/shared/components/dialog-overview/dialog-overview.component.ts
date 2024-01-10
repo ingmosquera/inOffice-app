@@ -50,11 +50,9 @@ export class DialogOverViewComponent{
                 userCreated:field.userCreated,
                 userNameCreated:field.userNameCreated,
                 dateCreated:field.userNameCreated,
-                timeCreated:field.timeCreated,
                 userModified:"CodigoID",
                 userNameModified:"Juadores ",
                 dateModified:field.dateModified,
-                timeModified:field.timeModified
             };
             updateFields= [updateField,...updateFields];
         }

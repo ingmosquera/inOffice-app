@@ -1,6 +1,6 @@
 import { TableColumn } from "../modules/config-components/table/table-config";
 
-export class TableColumns{
+export class TableItemColumns{
     static setItemTableColumns():TableColumn[] {
         return [
             {
@@ -198,5 +198,4 @@ export class TableColumns{
             },
         ];
     }
-
 }

@@ -11,12 +11,13 @@ import { DialogComponent } from "../../core/shared/components/dialog/dialog.comp
 import { DialogOverViewComponent } from "../../core/shared/components/dialog-overview/dialog-overview.component";
 import { DetailItem, MovementItem } from "../../core/modules/item/dataItem";
 import { MatExpansionModule } from "@angular/material/expansion";
-import { Client, FieldByClient } from "../../core/modules/client/client";
+import { Client, ClientField } from "../../core/modules/client/client";
 import { ClientService } from "../../services/clientService";
 import { DataItem } from "../../core/modules/item/dataItem";
-import { TableColumns } from "../../core/helpers/tableColums";
+
 import { MatTabsModule } from "@angular/material/tabs";
 import { DetailRemittance } from "../../core/modules/remesas/remittance";
+import { TableItemColumns } from "../../core/helpers/tableItemColumns";
 
 @Component({
     selector: 'app-item',
@@ -42,7 +43,7 @@ export class ItemComponent implements OnInit {
     selectedClientValue!: string;
     selectedFieldClientValue: string="";
     clienteList!:Client[];
-    fieldByClient!:FieldByClient[];
+    fieldByClient!:ClientField[];
     valuesfilter!:string;
     hiddenfilter!:string;
     valueParameter!:string;
@@ -60,15 +61,15 @@ export class ItemComponent implements OnInit {
     }
 
     private setConfigItemTable():void{
-        this.configItemTable = ConfigComponents.ConfigTable("",this.totalItems,TableColumns.setItemTableColumns(),true);
+        this.configItemTable = ConfigComponents.ConfigTable("",this.totalItems,TableItemColumns.setItemTableColumns(),true);
     }
     
     private setConfigHistoryTable():void{
-        this.configHistoryTable = ConfigComponents.ConfigTable("",this.totalHistory,TableColumns.setHistoryItemTableColumns(),false);
+        this.configHistoryTable = ConfigComponents.ConfigTable("",this.totalHistory,TableItemColumns.setHistoryItemTableColumns(),false);
     }
 
     private setConfigRemittanceTable():void{
-        this.configRemittanceTable = ConfigComponents.ConfigTable("",this.totalRemittance,TableColumns.setRemittanceDetailTableColumns(),false);
+        this.configRemittanceTable = ConfigComponents.ConfigTable("",this.totalRemittance,TableItemColumns.setRemittanceDetailTableColumns(),false);
     }
     private setFiltervalue():void{
         this.valuesfilter="";
@@ -76,7 +77,6 @@ export class ItemComponent implements OnInit {
         this.valueParameter="";
         this.selectedOption="";
     }
-
     
     showItemData(page:number,pageSize:number):void{
         const startIndex = (page-1) * pageSize==0?1:(page-1) * pageSize;
@@ -85,7 +85,7 @@ export class ItemComponent implements OnInit {
             if(data.result.totalRegisters ==0)
                 return this.showMessage("No se encontró información con los parámetros ingresados.");
 
-                this.dataSourceItem = data.result.data;
+            this.dataSourceItem = data.result.data;
             this.totalItems = data.result.totalRegisters;        
             this.loadingData=false;
         },
@@ -139,42 +139,9 @@ export class ItemComponent implements OnInit {
     onPageRemittanceChanged(event:any):void{
         this.showItemData(event.pageIndex+1,event.pageSize);
     }
-
-    onclickValidate():void{
-        const dialogRef = this.dialog.open(DialogComponent,{
-            disableClose:true,
-            data:{
-                title:"Titulo de prueba",
-                message:"Este es un mensaje para mirar que si funciona todo",
-                confirm:true
-            }
-        });
-
-        dialogRef.componentInstance.confirmClik.subscribe(()=>{
-            console.log("La operacion sigue");
-        });
-        /*
-        dialogRef.componentInstance.cancelClik.subscribe(()=>{
-            console.log("Se cancelo la operacion");
-        });
-        */
-    }
-
-    onclickShowMessate():void{
-        this.dialog.open(DialogComponent,{
-            disableClose:false,
-            data:{
-                title:"Titulo de prueba",
-                message:"Prueba de mensajes",
-                confirm:false
-            }
-        });
-    }
-
     onDataSelected(element:any):void{
         const result:DataItem = JSON.parse(JSON.stringify(element));
         this.itemService.getItemDetail(result.item).subscribe((data)=>{
-            console.log("El resultado es ",data);
             if (data.result.length==0)
                 return this.showMessage("No se encontró detalle del item "+ result.item);
             
@@ -257,10 +224,10 @@ export class ItemComponent implements OnInit {
         const clienteName= this.clienteList.filter((client:Client)=> client.id==this.selectedClientValue)
                                            .map((client)=> client.name);
 
-        const filedName = this.fieldByClient.filter((field:FieldByClient)=> field.name==this.selectedFieldClientValue)
+        const filedName = this.fieldByClient.filter((field:ClientField)=> field.name==this.selectedFieldClientValue)
                                            .map((field)=> field.name);
 
-        const idField = this.fieldByClient.filter((field:FieldByClient)=> field.name==this.selectedFieldClientValue)
+        const idField = this.fieldByClient.filter((field:ClientField)=> field.name==this.selectedFieldClientValue)
                                             .map((field)=> field.id);                                            
         
         if (this.valuesfilter.length==0){
