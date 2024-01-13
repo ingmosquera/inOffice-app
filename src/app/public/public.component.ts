@@ -61,7 +61,12 @@ export class PublicComponent implements OnInit {
   }
 
   public onItemClick(node:MenuItemNode):void{
-    console.log(node.url);
-    this.router.navigate([node.url],{queryParams:{activity:"1"}});
+    if (node.url=='login'){
+      this.router.navigate(['/']);
+    }
+    else{
+      this.router.navigate([node.url],{queryParams:{activity:"1"}});
+    }
+    
   }
 }
