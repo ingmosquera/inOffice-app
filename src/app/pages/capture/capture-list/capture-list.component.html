@@ -1,0 +1,7 @@
+<app-spinner></app-spinner>
+<app-table class="mt-4"
+        [configTable] ="configItemTable"
+        [tableData] ="dataSourceItem"
+        [loadingData] = "loadingData"
+        (dataSelected) = "onDataSelected($event)">
+</app-table>

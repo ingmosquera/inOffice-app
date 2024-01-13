@@ -1,93 +1,94 @@
 import { Injectable } from "@angular/core";
-import { Client, FieldByClient } from "../core/modules/client/client";
-import { Observable, of } from "rxjs";
-import { ListPaginationResponse } from "../core/Response/listPaginationResponse";
+import { Client, ClientAddressRequest, ClientField, ClientItemType, ClientModel, ClientRequest } from "../core/modules/client/client";
+import { Observable } from "rxjs";
+import { ApiResponse, ListPaginationResponse } from "../core/Response/response";
+import { HttpClient } from "@angular/common/http";
+import { environment } from "../../environments/environment";
 
 @Injectable({providedIn: 'root'})
 
 export class ClientService{
-    private CLIENT_DATA:Client[] = [
-        {
-            id:"1",
-            createDate : new Date(),
-            modifiedDate : new Date(),
-            active:true,
-            address:"Direccion 1",
-            city:"Bogotá",
-            name:"Name 1",
-            userCreate:"User Create",
-            userModified: "User Modified"
-        },
-        {
-            id:"2",
-            createDate : new Date(),
-            modifiedDate : new Date(),
-            active:true,
-            address:"Direccion 2",
-            city:"Bogotá",
-            name:"Name 2",
-            userCreate:"User Create",
-            userModified: "User Modified"
-        },
-        {
-            id:"3",
-            createDate : new Date(),
-            modifiedDate : new Date(),
-            active:true,
-            address:"Direccion 3",
-            city:"Bogotá",
-            name:"Name 3",
-            userCreate:"User Create",
-            userModified: "User Modified"
-        },
-    ];
+    constructor(private readonly http:HttpClient){}
+    private method:string="client";
+    
+    private clientModel!:ClientModel;
 
-    private FIELD_BY_CLIENT:FieldByClient[]=[
-        {
-            name:"Campo 1",
-            dataBaseName:"Base campo 1",
-            client:"1"
-        },
-        {
-            name:"Campo 11",
-            dataBaseName:"Base campo 11",
-            client:"1"
-        },
-        {
-            name:"Campo 2",
-            dataBaseName:"Base campo 2",
-            client:"2"
-        },
-        {
-            name:"Campo 22",
-            dataBaseName:"Base campo 22",
-            client:"2"
-        },
-        {
-            name:"Campo 222",
-            dataBaseName:"Base campo 222",
-            client:"2"
-        },
-        {
-            name:"Campo 3",
-            dataBaseName:"Base campo 3",
-            client:"3"
-        }
-    ]
-    getClientActive():Observable<Client[]>{
-        return of(this.CLIENT_DATA);
+    getClientModel():ClientModel{
+        return this.clientModel;
     }
 
-    getClienAll(filter:string,startPage:number,endPage:number):Observable<ListPaginationResponse<Client[]>>{
-        const paginatedData = this.CLIENT_DATA.slice(startPage,endPage);
-        const result = {
-            result :paginatedData,
-            totalItems :this.CLIENT_DATA.length
-        }
-        return of(result);
+    setClietModel(data:ClientModel):void{
+        this.clientModel = data;
     }
 
-    getFieldByCustomer(idClient:string):Observable<FieldByClient[]>{
-        return of(this.FIELD_BY_CLIENT.filter((data:FieldByClient) => data.client==idClient));
+    getClientActive():Observable<ApiResponse<Client[]>>{
+        const Url = `${environment.URLAPIMANAGEMENT}/${this.method}/getAll`
+        return this.http.get<ApiResponse<Client[]>>(Url);
+    }
+
+    getClientAll(startPage:number,endPage:number):Observable<ApiResponse<ListPaginationResponse<Client[]>>>{
+        const Url = `${environment.URLAPIMANAGEMENT}/${this.method}/getAll`
+        return this.http.get<ApiResponse<ListPaginationResponse<Client[]>>>(Url);
+    }
+
+    getFieldByClient(idClient:string):Observable<ApiResponse<ClientField[]>>{
+        const Url = `${environment.URLAPIMANAGEMENT}/${this.method}/fields/${idClient}`
+        return this.http.get<ApiResponse<ClientField[]>>(Url);
+    }
+
+    CreateClient(dataClient:Client):Observable<ApiResponse<string>>{
+        const Url = `${environment.URLAPIMANAGEMENT}/${this.method}/login`
+        return this.http.post<ApiResponse<string>>(Url,dataClient);
+    }
+
+    UpdateClient(dataClient:Client):Observable<ApiResponse<string>>{
+        const Url = `${environment.URLAPIMANAGEMENT}/${this.method}/login`
+        return this.http.post<ApiResponse<string>>(Url,dataClient);
+    }
+
+    getAddressByClient(idClient:string,startPage:number,endPage:number):Observable<ApiResponse<ListPaginationResponse<ClientAddressRequest[]>>>{
+        const Url = `${environment.URLAPIMANAGEMENT}/${this.method}/fields/${idClient}`
+        return this.http.get<ApiResponse<ListPaginationResponse<ClientAddressRequest[]>>>(Url);
+    }
+
+    CreateAddressClient(dataClient:ClientAddressRequest):Observable<ApiResponse<string>>{
+        const Url = `${environment.URLAPIMANAGEMENT}/${this.method}/login`
+        return this.http.post<ApiResponse<string>>(Url,dataClient);
+    }
+
+    UpdateAddressClient(dataClient:ClientAddressRequest):Observable<ApiResponse<string>>{
+        const Url = `${environment.URLAPIMANAGEMENT}/${this.method}/login`
+        return this.http.post<ApiResponse<string>>(Url,dataClient);
+    }
+
+    getItemTypeByClient(idClient:string,startPage:number,endPage:number):Observable<ApiResponse<ListPaginationResponse<ClientItemType[]>>>{
+        const Url = `${environment.URLAPIMANAGEMENT}/${this.method}/fields/${idClient}`
+        return this.http.get<ApiResponse<ListPaginationResponse<ClientItemType[]>>>(Url);
+    }
+
+    CreateItemTypeClient(dataClient:ClientItemType):Observable<ApiResponse<string>>{
+        const Url = `${environment.URLAPIMANAGEMENT}/${this.method}/login`
+        return this.http.post<ApiResponse<string>>(Url,dataClient);
+    }
+
+    UpdateItemTypeClient(dataClient:ClientItemType):Observable<ApiResponse<string>>{
+        const Url = `${environment.URLAPIMANAGEMENT}/${this.method}/login`
+        return this.http.post<ApiResponse<string>>(Url,dataClient);
+    }
+
+    getRequestByClient(idClient:string,startPage:number,endPage:number):Observable<ApiResponse<ListPaginationResponse<ClientRequest[]>>>{
+        const Url = `${environment.URLAPIMANAGEMENT}/${this.method}/fields/${idClient}`
+        return this.http.get<ApiResponse<ListPaginationResponse<ClientRequest[]>>>(Url);
+    }
+
+    CreateRequestClient(dataClient:ClientRequest):Observable<ApiResponse<string>>{
+        const Url = `${environment.URLAPIMANAGEMENT}/${this.method}/login`
+        return this.http.post<ApiResponse<string>>(Url,dataClient);
+    }
+
+    UpdateRequestClient(dataClient:ClientRequest):Observable<ApiResponse<string>>{
+        const Url = `${environment.URLAPIMANAGEMENT}/${this.method}/login`
+        return this.http.post<ApiResponse<string>>(Url,dataClient);
     }
 }
+

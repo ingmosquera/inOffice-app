@@ -1,0 +1,90 @@
+<app-spinner></app-spinner>
+<form (ngSubmit)="onSubmit()" [formGroup]="captureDetailForm" class="mt-4">
+    <div fxLayout="row wrap" fxLayoutGap="16px">
+        <mat-form-field fxFlex="10%">
+            <mat-label>Id</mat-label>
+            <input type="number" matInput placeholder="Id" formControlName="id" readonly>
+        </mat-form-field>
+        
+        <mat-form-field fxFlex="20%">
+            <mat-label>Capturador</mat-label>
+            <mat-select formControlName="captureId">
+                <mat-option value="1">Capturador 1</mat-option>
+                <mat-option value="2">Capturador 2</mat-option>
+                <mat-option value="3">Capturador 3</mat-option>
+            </mat-select>
+        </mat-form-field>
+
+        <mat-form-field fxFlex="25%">
+            <mat-label>Nombre campo</mat-label>
+            <input matInput placeholder="Campo" formControlName="field" readonly>
+        </mat-form-field>
+
+        <mat-form-field fxFlex="20%">
+            <mat-label>Tipo Campo</mat-label>
+            <mat-select formControlName="fieldtype">
+                <mat-option value="T">Texto</mat-option>
+                <mat-option value="F">Fecha</mat-option>
+                <mat-option value="N">Número</mat-option>
+            </mat-select>
+        </mat-form-field>
+
+        <mat-form-field fxFlex="20%">
+            <mat-label>Tipo item</mat-label>
+            <mat-select formControlName="itemtype">
+                <mat-option value="1">C1</mat-option>
+                <mat-option value="2">FF</mat-option>
+                <mat-option value="3">SD</mat-option>
+            </mat-select>
+        </mat-form-field>
+
+        <mat-form-field fxFlex="20%">
+            <mat-label>Tipo Campo</mat-label>
+            <mat-select formControlName="fieldtype">
+                <mat-option value="1">C1</mat-option>
+                <mat-option value="2">FF</mat-option>
+                <mat-option value="3">SD</mat-option>
+            </mat-select>
+        </mat-form-field>
+
+
+        <div fxFlex="20%">
+            <div style="margin-top:5%;">
+                <label>Obligatorio: </label>
+                <mat-radio-group formControlName="required">
+                    <mat-radio-button value="Y">Si</mat-radio-button>
+                    <mat-radio-button value="N">No</mat-radio-button>
+                </mat-radio-group>
+            </div>
+        </div>
+
+        <div fxFlex="20%">
+            <div style="margin-top:5%;">
+                <label>Busqueda: </label>
+                <mat-radio-group formControlName="search">
+                    <mat-radio-button value="Y">Si</mat-radio-button>
+                    <mat-radio-button value="N">No</mat-radio-button>
+                </mat-radio-group>
+            </div>
+        </div>
+
+        <div fxFlex="20%">
+            <div style="margin-top:5%;">
+                <label>Activo: </label>
+                <mat-radio-group formControlName="active">
+                    <mat-radio-button value="Y">Si</mat-radio-button>
+                    <mat-radio-button value="N">No</mat-radio-button>
+                </mat-radio-group>
+            </div>
+        </div>
+    </div>
+    <button mat-raised-button color="primary" class="float-center" [disabled]="captureDetailForm.invalid">{{labelButton}}</button>
+    <h5>Los campos con * (asterisco) son obligatorios</h5>
+</form>
+
+<app-table class="mt-4"
+        [configTable] ="configItemTable"
+        [tableData] ="dataSourceItem"
+        [loadingData] = "loadingData"
+        (dataSelected) = "onDataSelected($event)">
+</app-table>

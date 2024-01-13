@@ -1,0 +1,42 @@
+<app-spinner></app-spinner>
+<form (ngSubmit)="onSubmit()" [formGroup]="captureQuestionForm" class="mt-4">
+    <div fxLayout="row wrap" fxLayoutGap="16px">
+        <mat-form-field fxFlex="10%">
+            <mat-label>Id</mat-label>
+            <input type="number" matInput placeholder="Id" formControlName="id" readonly>
+        </mat-form-field>
+        
+        <mat-form-field fxFlex="20%">
+            <mat-label>Campo Capturador</mat-label>
+            <mat-select formControlName="captureId">
+                <mat-option value="1">Campo Capturador 1</mat-option>
+                <mat-option value="2">Campo Capturador 2</mat-option>
+                <mat-option value="3">Campo Capturador 3</mat-option>
+            </mat-select>
+        </mat-form-field>
+
+        <mat-form-field fxFlex="25%">
+            <mat-label>Pregunta</mat-label>
+            <input matInput placeholder="Pregunta" formControlName="question" readonly>
+        </mat-form-field>
+
+        <div fxFlex="20%">
+            <div style="margin-top:5%;">
+                <label>Activo: </label>
+                <mat-radio-group formControlName="active">
+                    <mat-radio-button value="Y">Si</mat-radio-button>
+                    <mat-radio-button value="N">No</mat-radio-button>
+                </mat-radio-group>
+            </div>
+        </div>
+    </div>
+    <button mat-raised-button color="primary" class="float-center" [disabled]="captureQuestionForm.invalid">{{labelButton}}</button>
+    <h5>Los campos con * (asterisco) son obligatorios</h5>
+</form>
+
+<app-table class="mt-4"
+        [configTable] ="configItemTable"
+        [tableData] ="dataSourceItem"
+        [loadingData] = "loadingData"
+        (dataSelected) = "onDataSelected($event)">
+</app-table>

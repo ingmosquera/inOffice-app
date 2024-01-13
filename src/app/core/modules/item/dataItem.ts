@@ -1,24 +1,27 @@
 import { BaseItem } from "../base/baseItem";
-import { Base } from "../base/base";
 export interface DataItem extends BaseItem{
-    client:string,
     status:number,
-    itemType:string,
-    ubication?:string,
-    line:string;
-    branch:string
+    statusName:string,
+    type:number,
+    typeName:string,
+    location?:string,
+    line:string,
+    lineName:string,
+    branch:string,
+    branchName:string,
+    client:string,
+    clientName:string
 }
-export interface DetailItem extends Base{
-    id:number,
-    item:string,
-    nameField:string,
-    fieldValue:string,
-    urlImageItem?:string
+export interface DetailItem extends BaseItem{
+    fieldId:string,
+    filedName:string,
+    value:string,
+    urlImage?:string,
 }
 
-export interface HistoryItem extends BaseItem{
+export interface MovementItem extends BaseItem{
+    idClassificationType:number,
+    classificationType_Name:string,
     oldValue:string,
-    newValue:string,
-    changeType:number,
-    changeTypeName:string
+    newValue:string
 }

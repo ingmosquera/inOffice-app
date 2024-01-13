@@ -1,0 +1,116 @@
+<app-spinner></app-spinner>
+<h1 class="text-center">CAPTURADOR DE INFORMACIÓN CONFIGURACION</h1>
+<mat-accordion>
+    <mat-expansion-panel (opened)="panelOpenState = true"
+                         (closed)="panelOpenState = false">
+      <mat-expansion-panel-header>
+        <mat-panel-title>
+          Datos principales del archivo
+        </mat-panel-title>
+        <mat-panel-description>
+          <ng-container *ngIf="!panelOpenState">
+                Despliegue para ver la información relacionada
+          </ng-container>
+        </mat-panel-description>
+      </mat-expansion-panel-header>
+      <form (ngSubmit)="onSubmit()" [formGroup]="CaptureConfigForm">
+        <div fxLayout="row wrap" fxLayoutGap="16px">
+            <mat-form-field fxFlex="8%">
+                <mat-label>Código</mat-label>
+                <input matInput placeholder="Id" formControlName="id" readonly>
+            </mat-form-field>
+
+            <mat-form-field fxFlex="20%">
+                <mat-label>Descripción</mat-label>
+                <input matInput placeholder="Descripción" formControlName="name" readonly>
+            </mat-form-field>
+
+            <mat-form-field fxFlex="25%">
+              <mat-label>Cliente</mat-label>
+              <mat-select formControlName="client">
+                  <mat-option value="1">Cliente Demos</mat-option>
+                  <mat-option value="2">Ciente Demo 1</mat-option>
+                  <mat-option value="3">Cliente Demo 2</mat-option>
+              </mat-select>
+            </mat-form-field>
+
+            <mat-form-field fxFlex="25%">
+                <mat-label>Tipo Capturador</mat-label>
+                <mat-select formControlName="type">
+                    <mat-option value="1">Capturador</mat-option>
+                    <mat-option value="2">Punteo</mat-option>
+                </mat-select>
+            </mat-form-field>
+
+            <mat-form-field fxFlex="15%">
+                <mat-label>Archivo Cargue</mat-label>
+                <mat-select formControlName="configfileId">
+                    <mat-option value="1">Cargue 1</mat-option>
+                    <mat-option value="2">Cargue 2</mat-option>
+                    <mat-option value="3">Cargue  3</mat-option>
+                </mat-select>
+            </mat-form-field>
+
+            <mat-form-field fxFlex="15%">
+              <mat-label>Línea</mat-label>
+              <mat-select formControlName="line">
+                  <mat-option value="1">Archivo Físico</mat-option>
+                  <mat-option value="2">Títulos Valores</mat-option>
+                  <mat-option value="3">Médios magnéticos</mat-option>
+              </mat-select>
+            </mat-form-field>
+
+            <mat-form-field fxFlex="25%">
+                <mat-label>Nivel</mat-label>
+                <mat-select formControlName="levelacces">
+                    <mat-option value="TD">Todos</mat-option>
+                    <mat-option value="CP">Cliente Principal</mat-option>
+                    <mat-option value="SU">sucursales</mat-option>
+                </mat-select>
+            </mat-form-field>
+        
+            <div fxFlex="25%">
+                <div style="margin-top: 5%;">
+                    <label>Activo: </label>
+                    <mat-radio-group formControlName="active">
+                        <mat-radio-button value="Y">Si</mat-radio-button>
+                        <mat-radio-button value="N">No</mat-radio-button>
+                    </mat-radio-group>
+                </div>
+            </div>
+        </div>
+        <button mat-raised-button color="primary" class="float-center" [disabled]="CaptureConfigForm.invalid">{{labelButton}}</button>
+        <h5>Los campos con * (asterisco) son obligatorios</h5>
+    </form>
+    </mat-expansion-panel>
+  </mat-accordion>
+
+  <mat-accordion>
+    <mat-expansion-panel (opened)="panelOpenDetailState = true"
+                         (closed)="panelOpenDetailState = false"
+                         class="mt-4"
+                         >
+      <mat-expansion-panel-header>
+        <mat-panel-title>
+          Detalle del configuración del capturador
+        </mat-panel-title>
+        <mat-panel-description>
+          <ng-container *ngIf="!panelOpenDetailState">
+                Despliegue para ver el detalle de la configuración
+          </ng-container>
+        </mat-panel-description>
+      </mat-expansion-panel-header>
+      
+      <mat-tab-group preserveContent class="tab-group-top">
+        <mat-tab label="Campos capturador">
+            <app-capture-detail/>
+        </mat-tab>
+        <mat-tab label="Preguntas capturador">
+          <app-capture-question/>
+        </mat-tab>
+        <mat-tab label="Sucursal capturador">
+          <app-captura-branch/>
+        </mat-tab>
+      </mat-tab-group>
+    </mat-expansion-panel>
+  </mat-accordion>

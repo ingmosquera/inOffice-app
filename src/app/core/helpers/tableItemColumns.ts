@@ -1,6 +1,6 @@
 import { TableColumn } from "../modules/config-components/table/table-config";
 
-export class TableColumns{
+export class TableItemColumns{
     static setItemTableColumns():TableColumn[] {
         return [
             {
@@ -15,27 +15,27 @@ export class TableColumns{
             },
             {
                 name:"Estado",
-                dataKey :"status",
+                dataKey :"statusName",
                 ishidden:false,
             },
             {
                 name:"TipoItem",
-                dataKey :"itemType",
+                dataKey :"typeName",
                 ishidden:false,
             },
             {
                 name:"Ubicacion",
-                dataKey :"ubication",
+                dataKey :"location",
                 ishidden:false,
             },
             {
                 name:"Linea",
-                dataKey :"line",
+                dataKey :"lineName",
                 ishidden:false,
             },
             {
                 name:"Sucursal",
-                dataKey :"branch",
+                dataKey :"branchName",
                 ishidden:false,
             },
         ]
@@ -156,14 +156,8 @@ export class TableColumns{
             },
             {
                 
-                name:"Tipo cambio",
-                dataKey :"changeType",
-                ishidden:false,
-            },
-            {
-                
                 name:"Nombre cambio",
-                dataKey :"changeTypeName",
+                dataKey :"classificationType_Name",
                 ishidden:false,
             },
             {
@@ -181,28 +175,27 @@ export class TableColumns{
             {
                 
                 name:"Fecha crea",
-                dataKey :"createDate",
+                dataKey :"dateCreated",
                 ishidden:false,
             },
             {
                 
                 name:"Usuario crea",
-                dataKey :"userCreate",
+                dataKey :"userNameCreated",
                 ishidden:false,
             },
             {
                 
                 name:"Fecha modifica",
-                dataKey :"modifiedDate",
+                dataKey :"dateModified",
                 ishidden:false,
             },
             {
                 
                 name:"Usuario modifica",
-                dataKey :"userModified",
+                dataKey :"userNameModified",
                 ishidden:false,
             },
         ];
     }
-
 }

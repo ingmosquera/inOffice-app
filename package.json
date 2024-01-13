@@ -3,8 +3,10 @@
   "version": "0.0.0",
   "scripts": {
     "ng": "ng",
-    "start": "ng serve",
-    "build": "ng build",
+    "start:dev": "ng serve --c=development",
+    "start:prod": "ng serve --c=production",
+    "build:dev": "ng build --c=development",
+    "build:prod": "ng build --c=production",
     "watch": "ng build --watch --configuration development",
     "test": "ng test"
   },
@@ -23,6 +25,7 @@
     "@angular/router": "^17.0.0",
     "@popperjs/core": "^2.11.8",
     "bootstrap": "^5.3.2",
+    "crypto-js": "^4.2.0",
     "jquery": "^3.7.1",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0",
@@ -32,6 +35,7 @@
     "@angular-devkit/build-angular": "^17.0.0",
     "@angular/cli": "^17.0.0",
     "@angular/compiler-cli": "^17.0.0",
+    "@types/crypto-js": "^4.2.1",
     "@types/jasmine": "~5.1.0",
     "jasmine-core": "~5.1.0",
     "karma": "~6.4.0",

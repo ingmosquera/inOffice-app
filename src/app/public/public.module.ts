@@ -10,6 +10,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { HomeComponent } from "./home/home.component";
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { FooterComponent } from "./footer/footer.component";
+import { ChangePasswordComponent } from "./changePassword/changePassword.component";
 
 @NgModule({
     imports:[
@@ -25,7 +26,8 @@ import { FooterComponent } from "./footer/footer.component";
         PublicComponent,
         HomeComponent,
         LoginComponent,
-        FooterComponent
+        FooterComponent,
+        ChangePasswordComponent
     ]
 })
 

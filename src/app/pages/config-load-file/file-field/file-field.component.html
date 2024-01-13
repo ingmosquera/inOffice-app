@@ -1,0 +1,57 @@
+<app-spinner></app-spinner>
+<form (ngSubmit)="onSubmit()" [formGroup]="fileFieldForm" class="mt-4">
+    <div fxLayout="row wrap" fxLayoutGap="16px">
+        <mat-form-field fxFlex="8%">
+            <mat-label>Id</mat-label>
+            <input type="number" matInput placeholder="Id" formControlName="id" readonly>
+        </mat-form-field>
+        
+        <mat-form-field fxFlex="8%">
+            <mat-label>Archivo</mat-label>
+            <input type="number" matInput placeholder="Archivo" formControlName="configfileId" readonly>
+        </mat-form-field>
+
+        <mat-form-field fxFlex="20%">
+            <mat-label>Nombre campo</mat-label>
+            <input matInput placeholder="Campo" formControlName="field">
+        </mat-form-field>
+
+        <mat-form-field fxFlex="20%">
+            <mat-label>Tipo</mat-label>
+            <mat-select formControlName="type">
+                <mat-option value="T">Texto</mat-option>
+                <mat-option value="F">Fecha</mat-option>
+                <mat-option value="N">Numero</mat-option>
+            </mat-select>
+        </mat-form-field>
+
+        <div fxFlex="20%">
+            <div style="margin-top:5%;">
+                <label>Obligatorio: </label>
+                <mat-radio-group formControlName="required">
+                    <mat-radio-button value="Y">Si</mat-radio-button>
+                    <mat-radio-button value="N">No</mat-radio-button>
+                </mat-radio-group>
+            </div>
+        </div>
+
+        <div fxFlex="20%">
+            <div style="margin-top:5%;">
+                <label>Activo: </label>
+                <mat-radio-group formControlName="active">
+                    <mat-radio-button value="Y">Si</mat-radio-button>
+                    <mat-radio-button value="N">No</mat-radio-button>
+                </mat-radio-group>
+            </div>
+        </div>
+    </div>
+    <button mat-raised-button color="primary" class="float-center" [disabled]="fileFieldForm.invalid">{{labelButton}}</button>
+    <h5>Los campos con * (asterisco) son obligatorios</h5>
+</form>
+
+<app-table class="mt-4"
+        [configTable] ="configItemTable"
+        [tableData] ="dataSourceItem"
+        [loadingData] = "loadingData"
+        (dataSelected) = "onDataSelected($event)">
+</app-table>

@@ -8,38 +8,45 @@ export class MenuService{
             {
               name: 'Welcome',
               children: [],
-              icon: 'home'
+              icon: 'home',
+              url:'home'
             },
             {
               name: 'Item',
               children: [],
-              icon: 'folder'
+              icon: 'folder',
+              url:'item'
             },
             {
-              name: 'Fruit',
-              children: [{name: 'Apple',icon:'subdirectory_arrow_right'}, {name: 'Banana',icon:'subdirectory_arrow_right'}, {name: 'Fruit loops',icon:'subdirectory_arrow_right'}],
-              icon: ''
+              name: 'Cliente',
+              children: [{name: 'Listar Cliente',icon:'subdirectory_arrow_right',url:'client'}, {name: 'Detalle Cliente',icon:'subdirectory_arrow_right',url:'client-detail'}],
+              icon: '',
+              url:''
             },
             {
-              name: 'Vegetables',
+              name: 'Configuración',
               children: [
                 {
-                  name: 'Green',
-                  children: [{name: 'Broccoli',icon:'subdirectory_arrow_right'}, {name: 'Brussels sprouts',icon:'subdirectory_arrow_right'}],
+                  name: 'Capturador',
+                  children: [{name: 'Listar capturadores',icon:'subdirectory_arrow_right',url:'capture-list'}, {name: 'Detalle Capurador',icon:'subdirectory_arrow_right',url:'capture-detail'}],
                   icon:'',
+                  url:''
                 },
                 {
-                  name: 'Orange',
-                  children: [{name: 'Pumpkins',icon:'subdirectory_arrow_right'}, {name: 'Carrots',icon:'subdirectory_arrow_right'}],
+                  name: 'Cargue archivo',
+                  children: [{name: 'Listar archivos',icon:'subdirectory_arrow_right',url:'load-file'}, {name: 'Detalle archivos',icon:'subdirectory_arrow_right',url:'load-file-detail'}],
                   icon:'',
+                  url:''
                 },
               ],
-              icon: ''
+              icon: '',
+              url:''
             },
             {
               name: 'Salir',
               children: [],
-              icon: 'exit_to_app'
+              icon: 'exit_to_app',
+              url:'login'
             },
         ];
     }
