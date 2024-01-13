@@ -45,7 +45,7 @@ export class ClientListComponent implements OnInit{
             }
         });
     }
-
+    
     private setConfigItemTable():void{
         this.configItemTable = ConfigComponents.ConfigTable("",this.totalItems,TableClientColumns.setClientTableColumns(),true);
     }

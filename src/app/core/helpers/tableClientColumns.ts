@@ -147,4 +147,5 @@ static setClientTableColumns():TableColumn[] {
             }
         ];
     }
+
 }

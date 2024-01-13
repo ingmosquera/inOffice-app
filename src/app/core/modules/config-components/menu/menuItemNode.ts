@@ -1,5 +1,6 @@
 export interface MenuItemNode{
     name:string;
     children?: MenuItemNode[],
-    icon:string
+    icon:string,
+    url:string,
   }

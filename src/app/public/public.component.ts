@@ -5,6 +5,7 @@ import { MatTreeFlatDataSource, MatTreeFlattener } from '@angular/material/tree'
 import { MenuItemFlatNode } from '../core/modules/config-components/menu/menuItemFlatNode';
 import { MenuItemNode } from '../core/modules/config-components/menu/menuItemNode';
 import { MenuService } from '../services/menuService';
+import { Router } from '@angular/router';
 @Component({
     selector:'app-public',
     templateUrl:'./public.component.html',
@@ -18,7 +19,8 @@ export class PublicComponent implements OnInit {
   public isMenuOpen = true;
   public contentMargin = 240;
   constructor(private breakpointObserver: BreakpointObserver,
-              private menuservice:MenuService){ 
+              private menuservice:MenuService,
+              private readonly router:Router){ 
                 this.dataSource.data = this.menuservice.getMenuConfig();
               }
 
@@ -29,12 +31,13 @@ export class PublicComponent implements OnInit {
     this.userName = "Luis Alberto Mosquera";
   }
   
-  private _transformer = (node: MenuItemNode, level: number) => {
+  private _transformer = (node: MenuItemNode, level: number):MenuItemFlatNode => {
     return {
       expandable: !!node.children && node.children.length > 0,
       name: node.name,
       icon : node.icon,
       level: level,
+      url : node.url
     };
   };  
   
@@ -47,7 +50,7 @@ export class PublicComponent implements OnInit {
     this._transformer,
     node => node.level,
     node => node.expandable,
-    node => node.children,
+    node => node.children
   );
   
   dataSource = new MatTreeFlatDataSource(this.treeControl, this.treeFlattener);
@@ -58,6 +61,7 @@ export class PublicComponent implements OnInit {
   }
 
   public onItemClick(node:MenuItemNode):void{
-    console.log(node.name);
+    console.log(node.url);
+    this.router.navigate([node.url],{queryParams:{activity:"1"}});
   }
 }

@@ -6,6 +6,10 @@ import { ItemComponent } from "../pages/item/item.component";
 import { ChangePasswordComponent } from "./changePassword/changePassword.component";
 import { ClientDetailComponent } from "../pages/client/client-detail/client-detail.component";
 import { ClientListComponent } from "../pages/client/client-list/client-list.component";
+import { LoadFileConfigComponent } from "../pages/config-load-file/file-config/file-config.component";
+import { CaptureConfigComponent } from "../pages/capture/capture-config/capture-config.component";
+import { LoadFileListComponent } from "../pages/config-load-file/file-list/file-list.component";
+import { CaptureListComponent } from "../pages/capture/capture-list/capture-list.component";
 
 const routes : Routes = [
   { path: 'changePassword', component: ChangePasswordComponent },
@@ -16,6 +20,10 @@ const routes : Routes = [
         { path:'item', component: ItemComponent},
         { path:'client', component: ClientListComponent},
         { path:'client-detail', component: ClientDetailComponent , data:{activity:"1"}},
+        { path:'load-file', component: LoadFileListComponent},
+        { path:'load-file-detail', component: LoadFileConfigComponent , data:{activity:"1"}},
+        { path:'capture-list', component: CaptureListComponent},
+        { path:'capture-detail', component: CaptureConfigComponent , data:{activity:"1"}},
     ]
   }  
 ]

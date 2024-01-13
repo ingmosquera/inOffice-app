@@ -1,22 +1,22 @@
 import { Base } from "../base/base";
 
-export interface ConfigFile extends Base{
-    id:number,
+export interface LoadFileConfig extends Base{
+    id?:number,
     client:string,
     name:string,
     active:boolean,
-    branch:string,
     line:string,
     levelacces:string
 }
 
-export interface ConfigFileBranch{
+export interface LoadFileBranch{
     configFileId:number,
     branch:string,
+    active:boolean,
 }
 
-export interface Configfiledetail{
-    id:number,
+export interface LoadFileField{
+    id?:number,
     configfileId:number,
     field:string,
     type:string,
