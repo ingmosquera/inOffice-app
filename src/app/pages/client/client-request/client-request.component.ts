@@ -7,7 +7,7 @@ import { ActivatedRoute, Params } from "@angular/router";
 import { ClientService } from "../../../services/clientService";
 import { ConfigComponents } from "../../../core/helpers/configComponents";
 import { ClientDetailComponent } from "../client-detail/client-detail.component";
-import { Client, ClientModel, ClientRequest } from "../../../core/modules/client/client";
+import { Client, ClientRequest } from "../../../core/modules/client/client";
 import { DialogComponent } from "../../../core/shared/components/dialog/dialog.component";
 import { pagination } from "../../../core/constants/constants";
 import { TableClientColumns } from "../../../core/helpers/tableClientColumns";
@@ -27,7 +27,6 @@ export class ClientRequests implements OnInit,AfterViewInit{
     dataSourceItem! : ClientRequest[];
     loadingData:boolean = false;
     totalItems!:number;
-    clientModel!:ClientModel;
     dataclient!:Client;
     constructor(private readonly fb:FormBuilder,
         private readonly dialog: MatDialog,
@@ -37,26 +36,28 @@ export class ClientRequests implements OnInit,AfterViewInit{
     ngOnInit(): void {
         this.setConfigItemTable();
         this.route.queryParams.subscribe((params:Params)=> {
-            this.activityType = params['activity'];
-            this.dataclient = params['dataclient'];
+            if ('dataclient' in params)
+                this.dataclient =JSON.parse(params['dataclient']);
         });
-        if (this.dataclient==undefined){
-            this.activityType ="1";
-        }
-        this.clientModel = this.clientService.getClientModel();
-        this.labelButton = this.activityType=="1"?"Crear solicitante": this.activityType=="2"?"Actualizar solicitante":"";
+        this.setCreateData();
+    }
+
+    private setCreateData():void{
+        this.activityType ="1";
+        this.labelButton = "Crear solicitante";
         this.clientRequestForm = this.initForm();
     }
 
+
     ngAfterViewInit() {
-        if (this.activityType=="2"){
-            this.RequestByClient(this.clientModel.id,pagination.PAGE_NUMBER,pagination.PAGE_SIZE);
-        }
+        if (this.dataclient != undefined)
+            this.RequestByClient(this.dataclient.id,pagination.PAGE_NUMBER,pagination.PAGE_SIZE);
     }
 
     private initForm():FormGroup{
         return this.fb.group({
-            address:['',[Validators.required]],
+            id:['',''],
+            name:['',[Validators.required]],
             active:['',[Validators.required]],
         });
     }
@@ -96,16 +97,17 @@ export class ClientRequests implements OnInit,AfterViewInit{
     }
 
     private createClientAddress():void{
-        const dialogRef =  this.showMessage("Esta seguro que desea crear la dirección para "+ 
-                                            this.clientModel.id +" "+ this.clientModel.name,true);
+        const dialogRef =  this.showMessage("Esta seguro que desea crear el solicitante para "+ 
+                                            this.dataclient.id +" "+ this.dataclient.name,true);
             dialogRef.componentInstance.confirmClik.subscribe(()=>{
                 const clientrequest : ClientRequest = {
-                    clientId:this.clientModel.id,
+                    clientId:this.dataclient.id,
                     name:this.clientRequestForm.value.name,
                     active:true
                 }
                 this.clientService.CreateRequestClient(clientrequest).subscribe(
                     data => {
+                        this.RequestByClient(this.dataclient.id,1,10);
                         this.showMessage(data.result,false);    
                     },
                     error => {
@@ -116,16 +118,17 @@ export class ClientRequests implements OnInit,AfterViewInit{
     }
 
     private updateClient():void{
-        const dialogRef =  this.showMessage("Esta seguro que desea crear la dirección para "+ 
-                                            this.clientModel.id +" "+ this.clientModel.name,true);
+        const dialogRef =  this.showMessage("Esta seguro que desea actualizar el solicitante para "+ 
+                                            this.dataclient.id +" "+ this.dataclient.name,true);
         dialogRef.componentInstance.confirmClik.subscribe(()=>{
             const clientrequest : ClientRequest = {
                 id:this.clientRequestForm.value.id,
-                clientId:this.clientModel.id,
+                clientId:this.dataclient.id,
                 name:this.clientRequestForm.value.name,
-                active:this.clientRequestForm.value.active
+                active:this.clientRequestForm.value.active=="Y"?true:false
             };
             this.clientService.UpdateRequestClient(clientrequest).subscribe(data => {
+                this.RequestByClient(this.dataclient.id,1,10);
                 this.showMessage(data.result,false);    
             },
             error => {
@@ -136,7 +139,7 @@ export class ClientRequests implements OnInit,AfterViewInit{
     }
 
     onSubmit(){
-        if(this.clientModel.id==null || this.clientModel.id ==""){
+        if(this.dataclient.id==null || this.dataclient.id ==""){
             this.showMessage("No se encontró el cliente para asociar.",false);
         }else{
             switch(this.activityType){
@@ -157,5 +160,21 @@ export class ClientRequests implements OnInit,AfterViewInit{
 
     onDataSelected(element:any){
         const result:ClientRequest = JSON.parse(JSON.stringify(element));
+        this.labelButton = "Actualizar solicitante";
+        this.activityType="2";
+        this.clientRequestForm= this.loadData(result);
+        this.clientRequestForm.get('active')?.setValue(result.active ? 'Y' : 'N');
+    }
+
+    private loadData(result:ClientRequest):FormGroup{
+        return this.fb.group({
+            id:[result.id,''],
+            name:[result.name,[Validators.required]],
+            active:['',[Validators.required]],
+        });
+    }
+
+    reset(){
+        this.setCreateData();
     }
 }

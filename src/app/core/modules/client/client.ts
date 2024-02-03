@@ -27,10 +27,13 @@ export interface ClientAddressRequest {
 }
 
 export interface ClientItemType {
+    id?:number,
     itemType:string,
+    itemTypeName?:string,
     itemTypeParent:string,
+    itemTypeParentName?:string,
     clientId:string,
-    quality:number,
+    quantity:number,
     line:string,
     lineName?:string,
     active:boolean
@@ -41,9 +44,4 @@ export interface ClientRequest {
     clientId:string,
     name:string,
     active:boolean
-}
-
-export interface ClientModel{
-    id:string,
-    name?:string
 }

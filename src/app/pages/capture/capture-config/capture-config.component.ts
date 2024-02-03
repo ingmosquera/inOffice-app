@@ -7,7 +7,6 @@ import { CaptureService } from "../../../services/captureService";
 import { SharedModule } from "../../../core/shared/shared.module";
 import { DialogComponent } from "../../../core/shared/components/dialog/dialog.component";
 import { ClientService } from "../../../services/clientService";
-import { ClientModel } from "../../../core/modules/client/client";
 import { CaptureDetailComponent } from "../capture-detail/capture-detail.component";
 import { QuestionDetailComponent } from "../capture-question/capture-question.component";
 import { CaptureBrachComponent } from "../captura-branch/captura-branch.component";
@@ -77,20 +76,11 @@ export class CaptureConfigComponent implements OnInit{
         return data;
     }
 
-    private sendClientModel(){
-        const data:ClientModel={
-            id:this.CaptureConfigForm.value.client
-        }
-        this.clientService.setClietModel(data);
-    }
-
-
     private createCapture():void{
         const dialogRef =  this.showMessage("Esta seguro que desea crear la configuración del capturador ",true);
             dialogRef.componentInstance.confirmClik.subscribe(()=>{
                 this.CaptureFileService.createCapture(this.createCaptureDataConfig()).subscribe(
                     data => {
-                        this.sendClientModel();
                         this.showMessage(data.result,false);    
                     },
                     error => {

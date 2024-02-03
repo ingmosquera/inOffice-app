@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, OnInit } from "@angular/core";
+import { AfterViewInit, Component, OnInit, QueryList, ViewChild, ViewChildren } from "@angular/core";
 import { SharedModule } from "../../../core/shared/shared.module";
 import { TableConfig } from "../../../core/modules/config-components/table/table-config";
 import { FormBuilder, FormGroup, Validators } from "@angular/forms";
@@ -7,11 +7,10 @@ import { ActivatedRoute, Params } from "@angular/router";
 import { ClientService } from "../../../services/clientService";
 import { ConfigComponents } from "../../../core/helpers/configComponents";
 import { DialogComponent } from "../../../core/shared/components/dialog/dialog.component";
-import { Client, ClientItemType, ClientModel } from "../../../core/modules/client/client";
+import { Client, ClientItemType } from "../../../core/modules/client/client";
 import { ClientDetailComponent } from "../client-detail/client-detail.component";
 import { pagination } from "../../../core/constants/constants";
 import { TableClientColumns } from "../../../core/helpers/tableClientColumns";
-
 
 @Component({
     selector: "app-client-item-type",
@@ -28,7 +27,6 @@ export class ClientItemTypes implements OnInit,AfterViewInit{
     dataSourceItem! : ClientItemType[];
     loadingData:boolean = false;
     totalItems!:number;
-    clientModel!:ClientModel;
     dataclient!:Client;
     
     constructor(private readonly fb:FormBuilder,
@@ -37,27 +35,33 @@ export class ClientItemTypes implements OnInit,AfterViewInit{
                 private readonly clientService: ClientService
                 ){}
     ngOnInit(): void {
-        this.setConfigItemTable();
-        this.route.queryParams.subscribe((params:Params)=> {
-            this.activityType = params['activity'];
-            this.dataclient = params['dataclient'];
-        });
-        if (this.dataclient==undefined){
-            this.activityType ="1";
-        }
-        this.clientModel = this.clientService.getClientModel();
-        this.labelButton = this.activityType=="1"?"Crear tipoitem": this.activityType=="2"?"Actualizar tipoitem":"";
-        this.itemtypeClientForm = this.initForm();
+        this.loadInitData();
     }
 
     ngAfterViewInit() {
-        if (this.activityType=="2"){
-            this.itemTypeByClient(this.clientModel.id,pagination.PAGE_NUMBER,pagination.PAGE_SIZE);
-        }
+        if (this.dataclient != undefined){}
+            this.itemTypeByClient(this.dataclient.id,pagination.PAGE_NUMBER,pagination.PAGE_SIZE);
+    }
+
+    private loadInitData(){
+        this.setConfigItemTable();
+        this.route.queryParams.subscribe((params:Params)=> {
+            if ('dataclient' in params)
+                this.dataclient =JSON.parse(params['dataclient']);
+        });
+       
+        this.setCreateData();
+    }
+
+    private setCreateData(){
+        this.activityType ="1";
+        this.labelButton = "Crear tipoitem";
+        this.itemtypeClientForm = this.initForm();
     }
 
     private initForm():FormGroup{
         return this.fb.group({
+            id:['',''],
             itemtype:['',[Validators.required]],
             itemtypeparent:['',],
             line:['',[Validators.required]],
@@ -82,13 +86,13 @@ export class ClientItemTypes implements OnInit,AfterViewInit{
     }
 
     private createClientAddress():void{
-        const dialogRef =  this.showMessage("Esta seguro que desea crear la dirección para "+ 
-                                            this.clientModel.id +" "+ this.clientModel.name,true);
+        const dialogRef =  this.showMessage("Esta seguro que desea crear el tipo de item para "+ 
+                                            this.dataclient.id +" "+ this.dataclient.name,true);
         dialogRef.componentInstance.confirmClik.subscribe(()=>{
             var client = this.getClientItemType();
-            client.clientId = this.clientModel.id;
             this.clientService.CreateItemTypeClient(client).subscribe(
                 data => {
+                    this.itemTypeByClient(client.clientId,1,10);
                     this.showMessage(data.result,false);    
                 },
                 error => {
@@ -100,29 +104,32 @@ export class ClientItemTypes implements OnInit,AfterViewInit{
 
     private getClientItemType():ClientItemType{
         const data :ClientItemType = {
-            itemType:this.itemtypeClientForm.value.itemType,
-            itemTypeParent:this.itemtypeClientForm.value.itemTypeParent,
-            clientId:this.itemtypeClientForm.value.clientId,
-            quality:this.itemtypeClientForm.value.quality,
+            itemType:this.itemtypeClientForm.value.itemtype,
+            itemTypeParent:this.itemtypeClientForm.value.itemtypeparent,
+            clientId:this.dataclient.id,
+            quantity:this.itemtypeClientForm.value.quantity,
             line:this.itemtypeClientForm.value.line,
-            active:this.itemtypeClientForm.value.active
+            active:this.itemtypeClientForm.value.active=="Y"?true:false
         };
         return data;
     }
 
     private updateClient():void{
-        const dialogRef =  this.showMessage("Esta seguro que desea crear la dirección para "+ 
-                                            this.clientModel.id +" "+ this.clientModel.name,true);
+        const dialogRef =  this.showMessage("Esta seguro que desea actualizar el tipo de item para "+ 
+                                            this.dataclient.id +" "+ this.dataclient.name,true);
+        const dataClient = this.getClientItemType();
         dialogRef.componentInstance.confirmClik.subscribe(()=>{
-            this.clientService.UpdateItemTypeClient(this.getClientItemType()).subscribe(
+            this.clientService.UpdateItemTypeClient(dataClient,this.itemtypeClientForm.value.id).subscribe(
                 data => {
-                    this.showMessage(data.result,false);    
+                    this.itemTypeByClient(dataClient.clientId,1,10);
+                    this.showMessage(data.result,false);
                 },
                 error => {
                     const message = error.error.errorMessage==null?"Error al procesar la solicitd":error.error.errorMessage;
                     this.showMessage(message,false);
             });
         });
+        
     }
 
     private itemTypeByClient(idClient:string,page:number,pageSize:number):void{
@@ -145,9 +152,10 @@ export class ClientItemTypes implements OnInit,AfterViewInit{
     }
 
     onSubmit(){
-        if(this.clientModel.id==null || this.clientModel.id ==""){
+        if(this.dataclient.id==null || this.dataclient.id ==""){
             this.showMessage("No se encontró el cliente para asociar.",false);
         }else{
+            if (this.itemtypeClientForm.value.id != null || this.itemtypeClientForm.value.id != "")
             switch(this.activityType){
                 case "1":{
                     this.createClientAddress();
@@ -166,5 +174,27 @@ export class ClientItemTypes implements OnInit,AfterViewInit{
 
     onDataSelected(element:any){
         const result:ClientItemType = JSON.parse(JSON.stringify(element));
+        this.labelButton = "Actualizar tipoitem";
+        this.activityType ="2";
+        this.itemtypeClientForm= this.loadData(result);
+        this.itemtypeClientForm.get('active')?.setValue(result.active ? 'Y' : 'N');
+        this.itemtypeClientForm.get('line')?.setValue(result.line?.toString());
+        this.itemtypeClientForm.get('itemtypeparent')?.setValue(result.itemTypeParent?.toString());
+        this.itemtypeClientForm.get('itemtype')?.setValue(result.itemType?.toString());
+    }
+
+    private loadData(result:ClientItemType):FormGroup{
+        return this.fb.group({
+            id:[result.id,''],
+            itemtype:[result.itemType,[Validators.required]],
+            itemtypeparent:[result.itemTypeParent,],
+            line:[result.line,[Validators.required]],
+            quantity:[result.quantity,[Validators.required]],
+            active:['',[Validators.required]],
+        });
+    }
+
+    reset(){
+        this.setCreateData();
     }
 }

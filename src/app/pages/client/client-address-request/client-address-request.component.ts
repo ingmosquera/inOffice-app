@@ -4,7 +4,7 @@ import { FormBuilder, FormGroup, Validators } from "@angular/forms";
 import { MatDialog } from "@angular/material/dialog";
 import { ActivatedRoute, Params } from "@angular/router";
 import { ClientService } from "../../../services/clientService";
-import { Client, ClientAddressRequest, ClientModel, ClientRequest } from "../../../core/modules/client/client";
+import { Client, ClientAddressRequest, ClientRequest } from "../../../core/modules/client/client";
 import { TableConfig } from "../../../core/modules/config-components/table/table-config";
 import { ConfigComponents } from "../../../core/helpers/configComponents";
 import { TableClientColumns } from "../../../core/helpers/tableClientColumns";
@@ -28,7 +28,6 @@ export class ClientAddress implements OnInit,AfterViewInit{
     dataSourceItem! : ClientAddressRequest[];
     loadingData:boolean = false;
     totalItems!:number;
-    clientModel!:ClientModel;
     dataclient!:Client;
     
     constructor(private readonly fb:FormBuilder,
@@ -39,23 +38,23 @@ export class ClientAddress implements OnInit,AfterViewInit{
     ngOnInit(): void {
         this.setConfigItemTable();
         this.route.queryParams.subscribe((params:Params)=> {
-            this.activityType = params['activity'];
-            this.dataclient = params['dataclient'];
+            if ('dataclient' in params)
+                this.dataclient =JSON.parse(params['dataclient']);
         });
-        if (this.dataclient==undefined){
-            this.activityType ="1";
-        }
-        this.clientModel = this.clientService.getClientModel();
-        this.labelButton = this.activityType=="1"?"Crear dirección": this.activityType=="2"?"Actualizar dirección":"";
-        this.clientAddressRequestForm = this.initForm();
+        this.setCreateData();
     }
 
     ngAfterViewInit() {
-        if (this.activityType=="2"){
-            this.addressByClient(this.clientModel.id,pagination.PAGE_NUMBER,pagination.PAGE_SIZE);
-        }
+        if (this.dataclient != undefined)
+            this.addressByClient(this.dataclient.id,pagination.PAGE_NUMBER,pagination.PAGE_SIZE);
     }
     
+    private setCreateData():void{
+        this.activityType ="1";
+        this.labelButton = "Crear dirección";
+        this.clientAddressRequestForm = this.initForm();
+    }
+
     private setConfigItemTable():void{
         this.configItemTable = ConfigComponents.ConfigTable("",this.totalItems,TableClientColumns.setClientAddressRequestTableColumns(),true);
     }
@@ -73,15 +72,16 @@ export class ClientAddress implements OnInit,AfterViewInit{
 
     private createClientAddress():void{
         const dialogRef =  this.showMessage("Esta seguro que desea crear la dirección para "+ 
-                                            this.clientModel.id +" "+ this.clientModel.name,true);
+                                            this.dataclient.id +" "+ this.dataclient.name,true);
         dialogRef.componentInstance.confirmClik.subscribe(()=>{
             const clientAddres : ClientAddressRequest = {
-                clientId:this.clientModel.id,
+                clientId:this.dataclient.id,
                 address:this.clientAddressRequestForm.value.address,
                 active:true
             }
             this.clientService.CreateAddressClient(clientAddres).subscribe(
                 data => {
+                    this.addressByClient(this.dataclient.id,pagination.PAGE_NUMBER,pagination.PAGE_SIZE);
                     this.showMessage(data.result,false);    
                 },
                 error => {
@@ -92,18 +92,20 @@ export class ClientAddress implements OnInit,AfterViewInit{
     }
 
     private updateClient():void{
-        if(this.clientModel.id==null || this.clientModel.id ==""){
+        if(this.dataclient.id==null || this.dataclient.id ==""){
             this.showMessage("No se encontró el cliente para asociar.",false);
         }else{
-            const dialogRef =  this.showMessage("Esta seguro que desea crear la dirección para "+ 
-                                                this.clientModel.id +" "+ this.clientModel.name,true);
+            const dialogRef =  this.showMessage("Esta seguro que desea actualizar la dirección para "+ 
+                                                this.dataclient.id +" "+ this.dataclient.name,true);
             dialogRef.componentInstance.confirmClik.subscribe(()=>{
                 const clientAddres : ClientAddressRequest = {
-                    clientId:this.clientModel.id,
+                    id:this.clientAddressRequestForm.value.id,
+                    clientId:this.dataclient.id,
                     address:this.clientAddressRequestForm.value.address,
-                    active:true
+                    active:this.clientAddressRequestForm.value.active=="Y"?true:false
                 };
                 this.clientService.UpdateAddressClient(clientAddres).subscribe(data => {
+                    this.addressByClient(this.dataclient.id,pagination.PAGE_NUMBER,pagination.PAGE_SIZE);
                     this.showMessage(data.result,false);    
                 },
                 error => {
@@ -116,6 +118,7 @@ export class ClientAddress implements OnInit,AfterViewInit{
     
     private initForm():FormGroup{
         return this.fb.group({
+            id:['',''],
             address:['',[Validators.required]],
             active:['',[Validators.required]],
         });
@@ -157,6 +160,24 @@ export class ClientAddress implements OnInit,AfterViewInit{
     }
 
     onDataSelected(element:any){
-        const result:ClientRequest = JSON.parse(JSON.stringify(element));
+        const result:ClientAddressRequest = JSON.parse(JSON.stringify(element));
+        this.activityType ="2";
+        this.labelButton = "Actualizar dirección";
+        this.clientAddressRequestForm= this.loadData(result);
+        this.clientAddressRequestForm.get('active')?.setValue(result.active ? 'Y' : 'N');
+
     }
+
+    private loadData(result:ClientAddressRequest):FormGroup{
+        return this.fb.group({
+            id:[result.id,''],
+            address:[result.address,[Validators.required]],
+            active:['',[Validators.required]],
+        });
+    }
+
+    reset(){
+        this.setCreateData();
+    }
+
 }

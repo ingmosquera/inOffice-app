@@ -1,7 +1,11 @@
-<app-spinner></app-spinner>
-<form (ngSubmit)="onSubmit()" [formGroup]="clientAddressRequestForm" class="mt-4">
+<form [formGroup]="clientAddressRequestForm" class="mt-4">
     <div fxLayout="row wrap" fxLayoutGap="16px">
-        <mat-form-field fxFlex="70%">
+        <mat-form-field fxFlex="10%">
+            <mat-label>Id</mat-label>
+            <input type="number" matInput placeholder="Id" formControlName="id" readonly>
+        </mat-form-field>
+        
+        <mat-form-field fxFlex="60%">
             <mat-label>Dirección</mat-label>
             <input  matInput placeholder="Dirección entrega" formControlName="address">
         </mat-form-field>
@@ -16,7 +20,8 @@
             </div>
         </div>
     </div>
-    <button mat-raised-button color="primary" class="float-center" [disabled]="clientAddressRequestForm.invalid">{{labelButton}}</button>
+    <button type="submit" style="margin-right:3%" (click)="onSubmit()" mat-raised-button color="primary" class="float-center" [disabled]="clientAddressRequestForm.invalid">{{labelButton}}</button>
+    <button mat-raised-button color="accent" class="float-center" (click)="reset()">Cancelar</button>
     <h5>Los campos con * (asterisco) son obligatorios</h5>
 </form>
 

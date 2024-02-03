@@ -61,19 +61,34 @@ static setClientTableColumns():TableColumn[] {
     static setClientItemTypeTableColumns():TableColumn[] {
         return [
             {
+                name:"id",
+                dataKey :"id",
+                ishidden:true,
+            },
+            {
                 name:"Client",
                 dataKey :"clientId",
                 ishidden:true,
             },
             {
                 name:"Tipo Item",
-                dataKey :"itemType",
+                dataKey :"itemTypeName",
                 ishidden:false,
             },
             {
                 name:"Tipo item padre",
-                dataKey :"itemTypeParent",
+                dataKey :"itemTypeParentName",
                 ishidden:false,
+            },
+            {
+                name:"Tipo Item",
+                dataKey :"itemType",
+                ishidden:true,
+            },
+            {
+                name:"Tipo item padre",
+                dataKey :"itemTypeParent",
+                ishidden:true,
             },
             {
                 name:"line",
@@ -87,7 +102,7 @@ static setClientTableColumns():TableColumn[] {
             },
             {
                 name:"Cantidad",
-                dataKey :"quality",
+                dataKey :"quantity",
                 ishidden:false,
             },
             {

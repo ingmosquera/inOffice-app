@@ -1,7 +1,6 @@
 import { Component, OnInit } from "@angular/core";
 import { TableConfig } from "../../../core/modules/config-components/table/table-config";
 import { LoadFileConfig } from "../../../core/modules/loadfile/loadfile";
-import { ClientModel } from "../../../core/modules/client/client";
 import { SharedModule } from "../../../core/shared/shared.module";
 import { Router } from "@angular/router";
 import { DialogComponent } from "../../../core/shared/components/dialog/dialog.component";
@@ -23,8 +22,6 @@ export class LoadFileListComponent implements OnInit {
     dataSourceItem! : LoadFileConfig[];
     loadingData:boolean = false;
     totalItems!:number;
-    clientModel!:ClientModel;
-    
 
     constructor(private readonly router:Router,
                 private readonly dialog: MatDialog,

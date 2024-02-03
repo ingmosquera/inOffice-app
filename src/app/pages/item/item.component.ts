@@ -165,7 +165,6 @@ export class ItemComponent implements OnInit {
         });
 
         dialogRef.componentInstance.saveInfo.subscribe((data)=>{
-            console.log("Data para salvar",data);
             this.dialog.open(DialogComponent,{
                 disableClose:false,
                 data:{
@@ -190,7 +189,7 @@ export class ItemComponent implements OnInit {
 
     onSelectionChangeFileds(){
         if (this.selectedClientValue!=null){
-            this.clientService.getFieldByClient(this.selectedClientValue).subscribe(data=>{
+            this.clientService.getListFieldByClient(this.selectedClientValue).subscribe(data=>{
                 this.selectedFieldClientValue = "";    
                 this.fieldByClient = data.result;
             },

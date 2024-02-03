@@ -65,7 +65,7 @@ export class PublicComponent implements OnInit {
       this.router.navigate(['/']);
     }
     else{
-      this.router.navigate([node.url],{queryParams:{activity:"1"}});
+      this.router.navigate([node.url]);
     }
     
   }

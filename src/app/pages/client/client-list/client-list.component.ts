@@ -1,6 +1,6 @@
 import { Component, OnInit } from "@angular/core";
 import { TableConfig } from "../../../core/modules/config-components/table/table-config";
-import { Client, ClientModel } from "../../../core/modules/client/client";
+import { Client  } from "../../../core/modules/client/client";
 import { ClientService } from "../../../services/clientService";
 import { DialogComponent } from "../../../core/shared/components/dialog/dialog.component";
 import { MatDialog } from "@angular/material/dialog";
@@ -23,7 +23,6 @@ export class ClientListComponent implements OnInit{
     dataSourceItem! : Client[];
     loadingData:boolean = false;
     totalItems!:number;
-    clientModel!:ClientModel;
     
     constructor(private readonly clientService:ClientService,
                 private readonly dialog:MatDialog,
@@ -55,7 +54,7 @@ export class ClientListComponent implements OnInit{
         const endIndex = startIndex + pageSize;
         this.clientService.getClientAll(startIndex,endIndex).subscribe(data=>{
             if(data.result.totalRegisters ==0)
-                this.showMessage("No se encontró información con los parámetros ingresados.",false);
+                this.showMessage("No se encontró información de clientes ",false);    
             
             this.dataSourceItem = data.result.data;
             this.totalItems = data.result.totalRegisters;        
@@ -69,12 +68,13 @@ export class ClientListComponent implements OnInit{
         this.setConfigItemTable();
     }
 
-    onPageItemChanged(event:any):void{
+    onPageClientChanged(event:any):void{
         this.ClientAll(event.pageIndex+1,event.pageSize);
     }
 
     onDataSelected(element:any):void{
-        const result:Client = JSON.parse(JSON.stringify(element));
-        this.router.navigate(['client-detail'],{queryParams:{activity:"2",dataclient:result}});
+        const result = JSON.stringify(element);
+        this.router.navigate(['client-detail'],{queryParams:{dataclient:result,created:"1"}});
     }
+
 }
