@@ -17,7 +17,7 @@
         <div fxLayout="row wrap" fxLayoutGap="16px">
             <mat-form-field fxFlex="15%">
                 <mat-label>Codigo</mat-label>
-                <input matInput placeholder="Cliente código" formControlName="id">
+                <input matInput placeholder="Cliente código" formControlName="id" [readonly]="puedeEditar">
             </mat-form-field>
             
             <mat-form-field fxFlex="15%">

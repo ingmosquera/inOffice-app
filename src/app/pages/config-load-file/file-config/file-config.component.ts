@@ -6,9 +6,8 @@ import { LoadFileBranchComponent } from "../file-branch/file-branch.component";
 import { LoadFileConfig } from "../../../core/modules/loadfile/loadfile";
 import { DialogComponent } from "../../../core/shared/components/dialog/dialog.component";
 import { MatDialog } from "@angular/material/dialog";
-import { FileService } from "../../../services/fileService";
 import { ActivatedRoute, Params } from "@angular/router";
-import { ClientService } from "../../../services/clientService";
+import { ConfigFileService } from "../../../services/configFileService";
 
 @Component({
     selector: "app-file-config",
@@ -28,8 +27,7 @@ export class LoadFileConfigComponent implements OnInit{
     constructor(private readonly fb:FormBuilder,
                 private readonly dialog:MatDialog,
                 private readonly route:ActivatedRoute,
-                private readonly loadFileService:FileService,
-                private readonly clientService:ClientService){
+                private readonly configFileService:ConfigFileService){
 
     }
     ngOnInit(): void {
@@ -50,7 +48,7 @@ export class LoadFileConfigComponent implements OnInit{
             client:[this.activityType!=="2"?"":this.dataLoad.client,[Validators.required]],
             name:[this.activityType!=="2"?"":this.dataLoad.name,[Validators.required]],
             line:[this.activityType!=="2"?"":this.dataLoad.line,[Validators.required]],
-            levelacces:[this.activityType!=="2"?"":this.dataLoad.levelacces,[Validators.required]],
+            levelacces:[this.activityType!=="2"?"":this.dataLoad.levelAcces,[Validators.required]],
             active:[this.activityType!=="2"?"":this.dataLoad.active,[Validators.required]],
         });
     }
@@ -61,7 +59,7 @@ export class LoadFileConfigComponent implements OnInit{
             name:this.FileConfigForm.value.name,
             active:this.FileConfigForm.value.active,
             line:this.FileConfigForm.value.line,
-            levelacces:this.FileConfigForm.value.levelacces,
+            levelAcces:this.FileConfigForm.value.levelacces,
             userCreated:"User Id",
             userNameCreated:"User Name",
             dateCreated: new Date(),
@@ -76,7 +74,7 @@ export class LoadFileConfigComponent implements OnInit{
     private createLoadFile():void{
         const dialogRef =  this.showMessage("Esta seguro que desea crear el cargue de archivo ",true);
             dialogRef.componentInstance.confirmClik.subscribe(()=>{
-                this.loadFileService.createConfigFile(this.createFileConfig()).subscribe(
+                this.configFileService.createConfigFile(this.createFileConfig()).subscribe(
                     data => {
                         this.showMessage(data.result,false);    
                     },
@@ -95,7 +93,7 @@ export class LoadFileConfigComponent implements OnInit{
             dialogRef.componentInstance.confirmClik.subscribe(()=>{
             var dataFile = this.createFileConfig();
             dataFile.id = this.FileConfigForm.value.id;
-            this.loadFileService.updateConfigFile(this.createFileConfig()).subscribe(
+            this.configFileService.updateConfigFile(this.createFileConfig()).subscribe(
                 data => {
                     this.showMessage(data.result,false);    
                 },

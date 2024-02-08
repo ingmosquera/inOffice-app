@@ -44,7 +44,7 @@ export class CaptureBrachComponent implements OnInit,AfterViewInit{
         if (this.dataclient==undefined){
             this.activityType ="1";
         }else{
-            this.loadFileid = this.dataclient.captureId;
+            this.loadFileid = this.dataclient.capture;
         }
         this.labelButton = this.activityType=="1"?"Adicionar eetalle captura": this.activityType=="2"?"Actualizar detalle captura":"";
         this.captureQuestionForm = this.initForm();
@@ -92,7 +92,7 @@ export class CaptureBrachComponent implements OnInit,AfterViewInit{
 
     private createCaptureBranchData():CaptureBranch{
         const data:CaptureBranch={
-            captureId:this.captureQuestionForm.value.captureId,
+            capture:this.captureQuestionForm.value.captureId,
             branch:this.captureQuestionForm.value.branch,
             active:this.captureQuestionForm.value.active,
         };

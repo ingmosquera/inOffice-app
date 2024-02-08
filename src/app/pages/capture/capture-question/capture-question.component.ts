@@ -92,7 +92,7 @@ export class QuestionDetailComponent implements OnInit,AfterViewInit{
 
     private createCaptureQuestionData():CaptureDetailQuestions{
         const data:CaptureDetailQuestions={
-            capturedetailiId:this.captureQuestionForm.value.capturedetailiId,
+            captureDetail:this.captureQuestionForm.value.capturedetailiId,
             question:this.captureQuestionForm.value.question,
             active:this.captureQuestionForm.value.active,
         };

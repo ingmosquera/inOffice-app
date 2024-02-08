@@ -2,14 +2,14 @@ import { AfterViewInit, Component, OnInit } from "@angular/core";
 import { SharedModule } from "../../../core/shared/shared.module";
 import { FormBuilder, FormGroup, Validators } from "@angular/forms";
 import { TableConfig } from "../../../core/modules/config-components/table/table-config";
-import { LoadFileConfig, LoadFileField } from "../../../core/modules/loadfile/loadfile";
+import { LoadFiledDetail } from "../../../core/modules/loadfile/loadfile";
 import { MatDialog } from "@angular/material/dialog";
 import { ActivatedRoute, Params } from "@angular/router";
-import { FileService } from "../../../services/fileService";
 import { ConfigComponents } from "../../../core/helpers/configComponents";
 import { TableLoadFileColumns } from "../../../core/helpers/tableloadfileColumns";
 import { DialogComponent } from "../../../core/shared/components/dialog/dialog.component";
 import { pagination } from "../../../core/constants/constants";
+import { ConfigFileService } from "../../../services/configFileService";
 
 @Component({
     selector: "app-load-file-field",
@@ -22,17 +22,17 @@ export class LoadFileFieldComponent implements OnInit, AfterViewInit {
     fileFieldForm!:FormGroup;
     labelButton!:string;
     configItemTable!:TableConfig;
-    dataSourceItem!:LoadFileField[];
+    dataSourceItem!:LoadFiledDetail[];
     loadingData:boolean = false;
     totalItems!:number;
-    dataclient!:LoadFileConfig;
+    dataclient!:LoadFiledDetail;
     loadFileid!:number;
     activityType!:string;
 
     constructor(private readonly fb:FormBuilder,
         private readonly dialog:MatDialog,
         private readonly route:ActivatedRoute,
-        private readonly fileService:FileService){}
+        private readonly configFileService:ConfigFileService){}
     
     ngOnInit(): void {
         this.setConfigItemTable();
@@ -59,7 +59,7 @@ export class LoadFileFieldComponent implements OnInit, AfterViewInit {
     private loadFileByField(id:number,page:number,pageSize:number):void{
         const startIndex = (page-1) * pageSize==0?1:(page-1) * pageSize;
         const endIndex = startIndex + pageSize;
-        this.fileService.getLoadFileByField(id,startIndex,endIndex).subscribe(data=>{
+        this.configFileService.getConigFileAllDetail(id,startIndex,endIndex).subscribe(data=>{
             if(data.result.totalRegisters ==0)
                 this.showMessage("No se encontró información con los parámetros ingresados.",false);
             
@@ -100,9 +100,9 @@ export class LoadFileFieldComponent implements OnInit, AfterViewInit {
         });
     }
 
-    private loadFieldFilesData():LoadFileField{
-        const data :LoadFileField = {
-            configfileId:this.fileFieldForm.value.configfileId,
+    private loadFieldFilesData():LoadFiledDetail{
+        const data :LoadFiledDetail = {
+            configfile:this.fileFieldForm.value.configfileId,
             field:this.fileFieldForm.value.field,
             type:this.fileFieldForm.value.type,
             required:this.fileFieldForm.value.required,
@@ -116,7 +116,7 @@ export class LoadFileFieldComponent implements OnInit, AfterViewInit {
         const dialogRef =  this.showMessage("Esta seguro que desea adicionar una sucural",true);
         dialogRef.componentInstance.confirmClik.subscribe(()=>{
             var client = this.loadFieldFilesData();
-            this.fileService.createLoadFileField(client).subscribe(
+            this.configFileService.createConfigFileDetail(client).subscribe(
                 data => {
                     this.showMessage(data.result,false);    
                 },
@@ -132,7 +132,7 @@ export class LoadFileFieldComponent implements OnInit, AfterViewInit {
         dialogRef.componentInstance.confirmClik.subscribe(()=>{
             var client = this.loadFieldFilesData();
             client.id = this.fileFieldForm.value.id;
-            this.fileService.updateLoadFileField(client).subscribe(
+            this.configFileService.updateConfigFileDetail(client).subscribe(
                 data => {
                     this.showMessage(data.result,false);    
                 },
@@ -163,7 +163,7 @@ export class LoadFileFieldComponent implements OnInit, AfterViewInit {
         }
     }
     onDataSelected(element:any){
-        const result:LoadFileField = JSON.parse(JSON.stringify(element));
+        const result:LoadFiledDetail = JSON.parse(JSON.stringify(element));
     }
 
     

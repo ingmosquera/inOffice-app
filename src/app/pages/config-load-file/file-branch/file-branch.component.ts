@@ -9,7 +9,7 @@ import { DialogComponent } from "../../../core/shared/components/dialog/dialog.c
 import { MatDialog } from "@angular/material/dialog";
 import { ActivatedRoute, Params } from "@angular/router";
 import { pagination } from "../../../core/constants/constants";
-import { FileService } from "../../../services/fileService";
+import { ConfigFileService } from "../../../services/configFileService";
 
 @Component({
     selector:"app-load-file-branch",
@@ -33,7 +33,7 @@ export class LoadFileBranchComponent implements OnInit,AfterViewInit{
     constructor(private readonly fb:FormBuilder,
                 private readonly dialog:MatDialog,
                 private readonly route:ActivatedRoute,
-                private readonly fileService:FileService){}
+                private readonly configFileService:ConfigFileService){}
 
     ngOnInit(): void {
         this.setConfigItemTable();
@@ -59,7 +59,7 @@ export class LoadFileBranchComponent implements OnInit,AfterViewInit{
     private loadFileByBranch(id:number,page:number,pageSize:number):void{
         const startIndex = (page-1) * pageSize==0?1:(page-1) * pageSize;
         const endIndex = startIndex + pageSize;
-        this.fileService.getLoadFileByBranch(id,startIndex,endIndex).subscribe(data=>{
+        this.configFileService.getConfigFileAllBranch(id,startIndex,endIndex).subscribe(data=>{
             if(data.result.totalRegisters ==0)
                 this.showMessage("No se encontró información con los parámetros ingresados.",false);
             
@@ -96,9 +96,9 @@ export class LoadFileBranchComponent implements OnInit,AfterViewInit{
             var client:LoadFileBranch = {
                 active :true,
                 branch : this.fileBranchForm.value.branch,
-                configFileId :  this.fileBranchForm.value.configFileId
+                configFile :  this.fileBranchForm.value.configFileId
             };
-            this.fileService.createLoadFileBranch(client).subscribe(
+            this.configFileService.createConfigFileBranch(client).subscribe(
                 data => {
                     this.showMessage(data.result,false);    
                 },
@@ -115,9 +115,9 @@ export class LoadFileBranchComponent implements OnInit,AfterViewInit{
             var client:LoadFileBranch = {
                 active :true,
                 branch : this.fileBranchForm.value.branch,
-                configFileId :  this.fileBranchForm.value.configFileId
+                configFile :  this.fileBranchForm.value.configFileId
             };
-            this.fileService.updateLoadFileBranch(client).subscribe(
+            this.configFileService.updateConfigFileBranch(client).subscribe(
                 data => {
                     this.showMessage(data.result,false);    
                 },

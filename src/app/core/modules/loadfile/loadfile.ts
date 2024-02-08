@@ -3,23 +3,31 @@ import { Base } from "../base/base";
 export interface LoadFileConfig extends Base{
     id?:number,
     client:string,
+    clientName?:string,
     name:string,
     active:boolean,
     line:string,
-    levelacces:string
+    lineName?:string,
+    levelAcces:string,
+    levelAccesName?:string,
 }
 
 export interface LoadFileBranch{
-    configFileId:number,
+    id?:number,
+    configFile:number,
+    configFileName?:number,
     branch:string,
+    branchName?:string,
     active:boolean,
 }
 
-export interface LoadFileField{
+export interface LoadFiledDetail{
     id?:number,
-    configfileId:number,
+    configfile:number,
+    configfileName?:string,
     field:string,
     type:string,
+    typeName?:string,
     required:boolean,
     active:boolean,
 }

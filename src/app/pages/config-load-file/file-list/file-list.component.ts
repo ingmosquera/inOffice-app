@@ -7,8 +7,8 @@ import { DialogComponent } from "../../../core/shared/components/dialog/dialog.c
 import { MatDialog } from "@angular/material/dialog";
 import { ConfigComponents } from "../../../core/helpers/configComponents";
 import { TableLoadFileColumns } from "../../../core/helpers/tableloadfileColumns";
-import { FileService } from "../../../services/fileService";
 import { pagination } from "../../../core/constants/constants";
+import { ConfigFileService } from "../../../services/configFileService";
 
 @Component({
     selector:"app-load-file-list",
@@ -25,7 +25,7 @@ export class LoadFileListComponent implements OnInit {
 
     constructor(private readonly router:Router,
                 private readonly dialog: MatDialog,
-                private readonly fileService:FileService){}
+                private readonly configFileService:ConfigFileService){}
     ngOnInit(): void {
         this.setConfigItemTable();
         this.configFileAll(pagination.PAGE_NUMBER,pagination.PAGE_SIZE);
@@ -38,7 +38,7 @@ export class LoadFileListComponent implements OnInit {
     private configFileAll(page:number,pageSize:number):void{
         const startIndex = (page-1) * pageSize==0?1:(page-1) * pageSize;
         const endIndex = startIndex + pageSize;
-        this.fileService.getLoadFileAll(startIndex,endIndex).subscribe(data=>{
+        this.configFileService.getConigFileAll(startIndex,endIndex).subscribe(data=>{
             if(data.result.totalRegisters ==0)
                 this.showMessage("No se encontró información con los parámetros ingresados.",false);
             

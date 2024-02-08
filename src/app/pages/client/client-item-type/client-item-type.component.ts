@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, OnInit, QueryList, ViewChild, ViewChildren } from "@angular/core";
+import { AfterViewInit, Component, OnInit } from "@angular/core";
 import { SharedModule } from "../../../core/shared/shared.module";
 import { TableConfig } from "../../../core/modules/config-components/table/table-config";
 import { FormBuilder, FormGroup, Validators } from "@angular/forms";
@@ -39,7 +39,7 @@ export class ClientItemTypes implements OnInit,AfterViewInit{
     }
 
     ngAfterViewInit() {
-        if (this.dataclient != undefined){}
+        if (this.dataclient != undefined)
             this.itemTypeByClient(this.dataclient.id,pagination.PAGE_NUMBER,pagination.PAGE_SIZE);
     }
 

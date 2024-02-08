@@ -17,7 +17,7 @@ export class ClientService{
     }
 
     getClientAll(startPage:number,endPage:number):Observable<ApiResponse<ListPaginationResponse<Client[]>>>{
-        const Url = `${environment.URLAPICLIENT}/${this.method}/getAll`
+        const Url = `${environment.URLAPICLIENT}/${this.method}/getAll?PageNumber=${startPage}&PageSize=${endPage}`
         return this.http.get<ApiResponse<ListPaginationResponse<Client[]>>>(Url);
     }
 
@@ -27,7 +27,7 @@ export class ClientService{
     }
 
     UpdateClient(dataClient:Client):Observable<ApiResponse<string>>{
-        const Url = `${environment.URLAPICLIENT}/${this.method}/update`
+        const Url = `${environment.URLAPICLIENT}/${this.method}/update?idClient=${dataClient.id}`
         return this.http.post<ApiResponse<string>>(Url,dataClient);
     }
 

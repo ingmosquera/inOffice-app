@@ -28,6 +28,7 @@ export class ClientDetailComponent implements OnInit{
     clientName:string ="";
     isLoading:boolean = false;
     showButton:boolean = false;
+    puedeEditar:boolean = false;
 
     constructor(private readonly fb:FormBuilder,
                 private readonly dialog: MatDialog,
@@ -41,14 +42,19 @@ export class ClientDetailComponent implements OnInit{
             if ('dataclient' in params)
                 this.dataclient =JSON.parse(params['dataclient'])
 
-            if ('created' in params)
+            if ('created' in params){
                 this.showButton=true;
+                this.puedeEditar=false;    
+            }
+                
         });
 
         if (this.dataclient ==undefined){
             this.activityType ="1";
+            this.puedeEditar=true;
         }else{
             this.activityType ="2";
+            this.puedeEditar=false;
         }
         this.setCreateData();
     }
@@ -83,7 +89,9 @@ export class ClientDetailComponent implements OnInit{
     }
 
     onSubmit(){
+        console.log("Tip destino ", this.activityType);
         switch(this.activityType){
+            
             case "1":{
                 this.createClient();
                 break;
@@ -106,10 +114,12 @@ export class ClientDetailComponent implements OnInit{
         }else{
             const dialogRef =  this.showMessage("Esta seguro que desea crear el cliente "+ 
                                             this.clienteAddForm.value.id +" "+ this.clienteAddForm.value.name,true);
+            const dataCliente = this.ClientDataCreate();
             dialogRef.componentInstance.confirmClik.subscribe(()=>{
-                this.clientService.CreateClient(this.ClientDataCreate()).subscribe(
+                this.clientService.CreateClient(dataCliente).subscribe(
                     data => {
-                        this.showMessage(data.result,false);    
+                        this.showMessage(data.result,false);
+                        this.router.navigate(['client-detail'],{queryParams:{dataclient:dataCliente}});
                     },
                     error => {
                         const message = error.error.errorMessage==null?"Error al procesar la solicitd":error.error.errorMessage;

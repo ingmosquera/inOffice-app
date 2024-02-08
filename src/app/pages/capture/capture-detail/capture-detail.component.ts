@@ -93,10 +93,10 @@ export class CaptureDetailComponent implements OnInit, AfterViewInit{
 
     private createCapureDetalilData():CaptureDetail{
         const data:CaptureDetail={
-            captureId:this.captureDetailForm.value.captureId,
+            capture:this.captureDetailForm.value.captureId,
             field:this.captureDetailForm.value.field,
-            itemtype:this.captureDetailForm.value.itemtype,
-            fieldtype:this.captureDetailForm.value.fieldtype,
+            itemType:this.captureDetailForm.value.itemtype,
+            fieldType:this.captureDetailForm.value.fieldtype,
             required:this.captureDetailForm.value.required,
             active:this.captureDetailForm.value.active,
             search:this.captureDetailForm.value.search,
