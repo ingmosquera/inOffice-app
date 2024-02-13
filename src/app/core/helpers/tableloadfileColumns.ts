@@ -10,30 +10,31 @@ export class TableLoadFileColumns{
                 ishidden:true,
             },
             {
-                name:"Codigo Cliente",
-                dataKey :"client",
-                ishidden:false,
-            },
-            {
                 name:"Descripción",
                 dataKey :"name",
                 ishidden:false,
             },
             {
-                name:"Activo?",
-                dataKey :"active",
-                ishidden:false,
+                name:"Cliente",
+                dataKey :"client",
+                ishidden:true,
             },
             {
-                name:"Sucursal",
-                dataKey :"branch",
+                name:"Cliente",
+                dataKey :"clientName",
                 ishidden:false,
             },
             {
                 name:"Linea",
                 dataKey :"line",
+                ishidden:true,
+            },
+            {
+                name:"Linea",
+                dataKey :"lineName",
                 ishidden:false,
             },
+
             {
                 name:"levelaccesId",
                 dataKey :"levelacces",
@@ -41,10 +42,14 @@ export class TableLoadFileColumns{
             },
             {
                 name:"Nivel",
-                dataKey :"levelaccesname",
+                dataKey :"levelAccesName",
                 ishidden:false,
-            }
-    
+            },
+            {
+                name:"Activo?",
+                dataKey :"active",
+                ishidden:false,
+            },
         ];
     }
     
@@ -58,8 +63,14 @@ export class TableLoadFileColumns{
             {
                 name:"Sucursal",
                 dataKey :"branch",
+                ishidden:true,
+            },
+            {
+                name:"Sucursal",
+                dataKey :"branchName",
                 ishidden:false,
             },
+
             {
                 name:"Activo?",
                 dataKey :"active",
@@ -94,7 +105,7 @@ export class TableLoadFileColumns{
             {
                 name:"Tipo Campo",
                 dataKey :"typeName",
-                ishidden:true,
+                ishidden:false,
             },
             {
                 name:"Obligatorio",

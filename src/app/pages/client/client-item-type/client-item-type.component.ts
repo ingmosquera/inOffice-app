@@ -11,6 +11,8 @@ import { Client, ClientItemType } from "../../../core/modules/client/client";
 import { ClientDetailComponent } from "../client-detail/client-detail.component";
 import { pagination } from "../../../core/constants/constants";
 import { TableClientColumns } from "../../../core/helpers/tableClientColumns";
+import { ConfigureService } from "../../../services/configureService";
+import { ItemType, Line } from "../../../core/modules/configuration/conciguration";
 
 @Component({
     selector: "app-client-item-type",
@@ -28,12 +30,15 @@ export class ClientItemTypes implements OnInit,AfterViewInit{
     loadingData:boolean = false;
     totalItems!:number;
     dataclient!:Client;
+    itemTypeList!:ItemType[];
+    itemTypeParentList!:ItemType[];
+    lineList!:Line[];
     
     constructor(private readonly fb:FormBuilder,
                 private readonly dialog: MatDialog,
                 private readonly route: ActivatedRoute,
-                private readonly clientService: ClientService
-                ){}
+                private readonly clientService: ClientService,
+                private readonly configureService:ConfigureService){}
     ngOnInit(): void {
         this.loadInitData();
     }
@@ -57,6 +62,37 @@ export class ClientItemTypes implements OnInit,AfterViewInit{
         this.activityType ="1";
         this.labelButton = "Crear tipoitem";
         this.itemtypeClientForm = this.initForm();
+        this.loadList();
+    }
+
+    private loadList():void{
+        this.configureService.getLineAll().subscribe(
+            data=>{
+                this.lineList = data.result;
+            },
+            error => {
+                const message = error.error.errorMessage==null?"Error al procesar la solicitd":error.error.errorMessage;
+                this.showMessage(message,false);
+        });
+
+        this.configureService.getItemTypeAll().subscribe(
+            data=>{
+                this.itemTypeList = data.result;
+            },
+            error => {
+                const message = error.error.errorMessage==null?"Error al procesar la solicitd":error.error.errorMessage;
+                this.showMessage(message,false);
+        });
+
+        this.configureService.getItemTypeParentStatusAll().subscribe(
+            data=>{
+                this.itemTypeParentList = data.result;
+            },
+            error => {
+                const message = error.error.errorMessage==null?"Error al procesar la solicitd":error.error.errorMessage;
+                this.showMessage(message,false);
+        });
+
     }
 
     private initForm():FormGroup{
@@ -71,7 +107,7 @@ export class ClientItemTypes implements OnInit,AfterViewInit{
     }
 
     private setConfigItemTable():void{
-        this.configItemTable = ConfigComponents.ConfigTable("",this.totalItems,TableClientColumns.setClientItemTypeTableColumns(),true);
+        this.configItemTable = ConfigComponents.ConfigTable("",this.totalItems,TableClientColumns.setClientItemTypeTableColumns(),false,true);
     }
 
     private showMessage(message :string,confirm:boolean){

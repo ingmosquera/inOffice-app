@@ -10,6 +10,8 @@ import { MatDialog } from "@angular/material/dialog";
 import { ActivatedRoute, Params } from "@angular/router";
 import { pagination } from "../../../core/constants/constants";
 import { ConfigFileService } from "../../../services/configFileService";
+import { ConfigureService } from "../../../services/configureService";
+import { Branch } from "../../../core/modules/configuration/conciguration";
 
 @Component({
     selector:"app-load-file-branch",
@@ -28,35 +30,54 @@ export class LoadFileBranchComponent implements OnInit,AfterViewInit{
     totalItems!:number;
     dataclient!:LoadFileConfig;
     loadFileid!:number;
-
+    showBranch!:boolean;
+    branchList!:Branch[];
 
     constructor(private readonly fb:FormBuilder,
                 private readonly dialog:MatDialog,
                 private readonly route:ActivatedRoute,
-                private readonly configFileService:ConfigFileService){}
+                private readonly configFileService:ConfigFileService,
+                private readonly configureService:ConfigureService){}
 
     ngOnInit(): void {
         this.setConfigItemTable();
         this.route.queryParams.subscribe((params:Params)=> {
-            this.activityType = params['activity'];
-            this.dataclient = params['dataclient'];
+            this.dataclient = JSON.parse(params['dataclient']);
         });
-        if (this.dataclient==undefined){
-            this.activityType ="1";
-        }else{
-            this.loadFileid = this.dataclient.id !== undefined ? this.dataclient.id : 0;
+        this.setCreateData();
+    }
+
+    private setCreateData():void{
+        if (this.dataclient != undefined){
+            if (this.dataclient.levelAcces=="SU"){
+                this.showBranch = true;
+            }else{
+                this.showBranch = false;
+            }
         }
-        this.labelButton = this.activityType=="1"?"Adicionar sucursal": this.activityType=="2"?"Actualizar sucursal":"";
+        this.activityType ="1";
+        this.labelButton ="Crear sucursal";
         this.fileBranchForm = this.initForm();
+
+        this.configureService.getBranchAll().subscribe(
+        data=>{
+            this.branchList = data.result;
+        },
+        error => {
+            const message = error.error.errorMessage==null?"Error al procesar la solicitd":error.error.errorMessage;
+            this.showMessage(message,false);
+        });
     }
 
     ngAfterViewInit() {
-        if (this.activityType=="2"){
-            this.loadFileByBranch(this.loadFileid,pagination.PAGE_NUMBER,pagination.PAGE_SIZE);
+        if (this.dataclient != undefined && this.dataclient.levelAcces=="SU"){
+            this.getFileBranch(this.dataclient.id!,pagination.PAGE_NUMBER,pagination.PAGE_SIZE);
         }
     }
 
-    private loadFileByBranch(id:number,page:number,pageSize:number):void{
+
+
+    private getFileBranch(id:number,page:number,pageSize:number):void{
         const startIndex = (page-1) * pageSize==0?1:(page-1) * pageSize;
         const endIndex = startIndex + pageSize;
         this.configFileService.getConfigFileAllBranch(id,startIndex,endIndex).subscribe(data=>{
@@ -76,7 +97,7 @@ export class LoadFileBranchComponent implements OnInit,AfterViewInit{
     }
 
     private setConfigItemTable():void{
-        this.configItemTable = ConfigComponents.ConfigTable("",this.totalItems,TableLoadFileColumns.setBranchTableColumns(),true);
+        this.configItemTable = ConfigComponents.ConfigTable("",this.totalItems,TableLoadFileColumns.setBranchTableColumns(),false,true);
     }
 
     private showMessage(message :string,confirm:boolean){
@@ -93,13 +114,10 @@ export class LoadFileBranchComponent implements OnInit,AfterViewInit{
     private createFileBranch():void{
         const dialogRef =  this.showMessage("Esta seguro que desea adicionar una sucural",true);
         dialogRef.componentInstance.confirmClik.subscribe(()=>{
-            var client:LoadFileBranch = {
-                active :true,
-                branch : this.fileBranchForm.value.branch,
-                configFile :  this.fileBranchForm.value.configFileId
-            };
-            this.configFileService.createConfigFileBranch(client).subscribe(
+            this.configFileService.createConfigFileBranch(this.getData()).subscribe(
                 data => {
+                    this.getFileBranch(this.dataclient.id!,pagination.PAGE_NUMBER,pagination.PAGE_SIZE);
+                    this.setCreateData();
                     this.showMessage(data.result,false);    
                 },
                 error => {
@@ -112,13 +130,13 @@ export class LoadFileBranchComponent implements OnInit,AfterViewInit{
     private updateFileBranch():void{
         const dialogRef =  this.showMessage("Esta seguro que desea actualizar una sucural",true);
         dialogRef.componentInstance.confirmClik.subscribe(()=>{
-            var client:LoadFileBranch = {
-                active :true,
-                branch : this.fileBranchForm.value.branch,
-                configFile :  this.fileBranchForm.value.configFileId
-            };
+            let client = this.getData();
+            client.id = this.fileBranchForm.value.id;
+            console.log("Mi configuracion para enviar es ",client);
             this.configFileService.updateConfigFileBranch(client).subscribe(
                 data => {
+                    this.getFileBranch(this.dataclient.id!,pagination.PAGE_NUMBER,pagination.PAGE_SIZE);
+                    this.setCreateData();
                     this.showMessage(data.result,false);    
                 },
                 error => {
@@ -128,35 +146,58 @@ export class LoadFileBranchComponent implements OnInit,AfterViewInit{
         });
     }
 
+    private getData(){
+        var client:LoadFileBranch = {
+            active :this.fileBranchForm.value.active=="Y"?true:false,
+            branch : this.fileBranchForm.value.branch,
+            configFile :  this.dataclient.id!
+        };
+        return client;
+    }
+
+    private loadData(data:LoadFileBranch) :FormGroup{
+        return this.fb.group({
+            id:[data.id,[Validators.required]],
+            branch:[data.branch,[Validators.required]],
+            active:["",[Validators.required]],
+        });
+    }
+
     onSubmit(){
-        if(this.loadFileid==null || this.loadFileid<= 0){
-            this.showMessage("No se encontró el archivo de cargue para asociar.",false);
-        }else{
-            switch(this.activityType){
-                case "1":{
-                    this.createFileBranch();
-                    break;
-                }                
-                case "2":{
-                    this.updateFileBranch();
-                    break;
-                }                
-                default:{
-                    this.showMessage("Activdad no permitida",false);
-                }
+        switch(this.activityType){
+            case "1":{
+                this.createFileBranch();
+                break;
+            }                
+            case "2":{
+                this.updateFileBranch();
+                break;
+            }                
+            default:{
+                this.showMessage("Activdad no permitida",false);
             }
         }
     }
 
     onDataSelected(element:any){
         const result:LoadFileBranch = JSON.parse(JSON.stringify(element));
+        this.activityType ="2";
+        this.labelButton ="Actulizar sucursal";
+
+        this.fileBranchForm= this.loadData(result);
+        this.fileBranchForm.get('active')?.setValue(result.active ? 'Y' : 'N');
+        this.fileBranchForm.get('branch')?.setValue(result.branch.toString());
     }
 
     initForm():FormGroup{
         return this.fb.group({
-            configFileId:[this.activityType!=="2"?"":this.fileBranchForm.value.configFileId,[Validators.required]],
-            branch:[this.activityType!=="2"?"":this.fileBranchForm.value.branch,[Validators.required]],
-            active:[this.activityType!=="2"?"":this.fileBranchForm.value.active,[Validators.required]],
+            id:["",""],
+            branch:["",[Validators.required]],
+            active:["",[Validators.required]],
         });
+    }
+
+    reset(){
+        this.setCreateData();
     }
 }

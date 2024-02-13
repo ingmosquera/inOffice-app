@@ -20,9 +20,9 @@ const routes : Routes = [
         { path:'client', component: ClientListComponent},
         { path:'client-detail', component: ClientDetailComponent,data: { dataclient: {} }},
         { path:'load-file', component: LoadFileListComponent},
-        { path:'load-file-detail', component: LoadFileConfigComponent},
+        { path:'load-file-detail', component: LoadFileConfigComponent,data: { dataclient: {} }},
         { path:'capture-list', component: CaptureListComponent},
-        { path:'capture-detail', component: CaptureConfigComponent},
+        { path:'capture-detail', component: CaptureConfigComponent,data: { dataclient: {} }},
     ]
   }  
 ]

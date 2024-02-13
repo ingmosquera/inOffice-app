@@ -1,5 +1,6 @@
 import { BaseItem } from "../base/baseItem";
 export interface DataItem extends BaseItem{
+    parent?:string,
     status:number,
     statusName:string,
     type:number,
@@ -16,7 +17,6 @@ export interface DetailItem extends BaseItem{
     fieldId:string,
     filedName:string,
     value:string,
-    urlImage?:string,
 }
 
 export interface MovementItem extends BaseItem{

@@ -46,7 +46,7 @@ export class ClientListComponent implements OnInit{
     }
     
     private setConfigItemTable():void{
-        this.configItemTable = ConfigComponents.ConfigTable("",this.totalItems,TableClientColumns.setClientTableColumns(),true);
+        this.configItemTable = ConfigComponents.ConfigTable("",this.totalItems,TableClientColumns.setClientTableColumns(),false,true);
     }
 
     private ClientAll(page:number,pageSize:number):void{

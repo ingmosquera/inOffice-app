@@ -9,6 +9,8 @@ import { ClientService } from "../../../services/clientService";
 import { ClientItemTypes } from "../client-item-type/client-item-type.component";
 import { ClientAddress } from "../client-address-request/client-address-request.component";
 import { ClientRequests } from "../client-request/client-request.component";
+import { ConfigureService } from "../../../services/configureService";
+import { Branch } from "../../../core/modules/configuration/conciguration";
 
 
 @Component({
@@ -29,12 +31,14 @@ export class ClientDetailComponent implements OnInit{
     isLoading:boolean = false;
     showButton:boolean = false;
     puedeEditar:boolean = false;
+    branchList!:Branch[];
 
     constructor(private readonly fb:FormBuilder,
                 private readonly dialog: MatDialog,
                 private readonly route: ActivatedRoute,
                 private readonly clientService: ClientService,
-                private readonly router:Router){
+                private readonly router:Router,
+                private readonly configureService:ConfigureService){
                 }
     
     ngOnInit(): void {
@@ -46,7 +50,6 @@ export class ClientDetailComponent implements OnInit{
                 this.showButton=true;
                 this.puedeEditar=false;    
             }
-                
         });
 
         if (this.dataclient ==undefined){
@@ -70,7 +73,14 @@ export class ClientDetailComponent implements OnInit{
             this.clienteAddForm.get('active')?.setValue(this.dataclient.active ? 'Y' : 'N');
             this.clienteAddForm.get('branch')?.setValue(this.dataclient.branch?.toString());
         }
-        
+        this.configureService.getBranchAll().subscribe(
+            data=>{
+                this.branchList = data.result;
+            },
+            error => {
+                const message = error.error.errorMessage==null?"Error al procesar la solicitd":error.error.errorMessage;
+                this.showMessage(message,false);
+            });
     }
 
     private loadData():FormGroup{
@@ -89,7 +99,6 @@ export class ClientDetailComponent implements OnInit{
     }
 
     onSubmit(){
-        console.log("Tip destino ", this.activityType);
         switch(this.activityType){
             
             case "1":{
@@ -140,6 +149,7 @@ export class ClientDetailComponent implements OnInit{
             dialogRef.componentInstance.confirmClik.subscribe(()=>{
                 this.clientService.UpdateClient(this.ClientDataCreate()).subscribe(
                     data => {
+                        this.refreshPage(this.ClientDataCreate());
                         this.showMessage(data.result,false);    
                     },
                     error => {
@@ -202,6 +212,12 @@ export class ClientDetailComponent implements OnInit{
     newClient(){
         this.router.navigateByUrl('/', {skipLocationChange: true}).then(() => {
             this.router.navigate(['client-detail']);
+        });
+    }
+
+    private refreshPage(dataFile:Client){
+        this.router.navigateByUrl('/', {skipLocationChange: true}).then(() => {
+            this.router.navigate(['client-detail'],{queryParams:{dataclient:JSON.stringify(dataFile),created:"1"}});
         });
     }
 }

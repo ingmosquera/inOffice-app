@@ -56,7 +56,7 @@ export class ClientAddress implements OnInit,AfterViewInit{
     }
 
     private setConfigItemTable():void{
-        this.configItemTable = ConfigComponents.ConfigTable("",this.totalItems,TableClientColumns.setClientAddressRequestTableColumns(),true);
+        this.configItemTable = ConfigComponents.ConfigTable("",this.totalItems,TableClientColumns.setClientAddressRequestTableColumns(),false,true);
     }
     
     private showMessage(message :string,confirm:boolean){
@@ -165,7 +165,6 @@ export class ClientAddress implements OnInit,AfterViewInit{
         this.labelButton = "Actualizar dirección";
         this.clientAddressRequestForm= this.loadData(result);
         this.clientAddressRequestForm.get('active')?.setValue(result.active ? 'Y' : 'N');
-
     }
 
     private loadData(result:ClientAddressRequest):FormGroup{

@@ -8,26 +8,27 @@
         <mat-form-field fxFlex="15%">
             <mat-label>Tipo item</mat-label>
             <mat-select formControlName="itemtype">
-                <mat-option value="1">Caja</mat-option>
-                <mat-option value="2">Carpeta</mat-option>
-                <mat-option value="3">Subdocumento</mat-option>
+                @for (itemType of itemTypeList; track itemType) {
+                    <mat-option [value]="itemType.id">{{itemType.name}}</mat-option>
+                }
             </mat-select>
         </mat-form-field>
 
         <mat-form-field fxFlex="15%">
             <mat-label>Tipo item padre</mat-label>
             <mat-select formControlName="itemtypeparent">
-                <mat-option value=""></mat-option>
-                <mat-option value="1">Caja</mat-option>
-                <mat-option value="2">Carpeta</mat-option>
+                @for (itemTypeParent of itemTypeParentList; track itemTypeParent) {
+                    <mat-option [value]="itemTypeParent.id">{{itemTypeParent.name}}</mat-option>
+                }
             </mat-select>
         </mat-form-field>
 
         <mat-form-field fxFlex="20%">
             <mat-label>Linea</mat-label>
             <mat-select formControlName="line">
-                <mat-option value="1">Archivo Fisico</mat-option>
-                <mat-option value="2">Titulos Valores</mat-option>
+                @for (line of lineList; track line) {
+                    <mat-option [value]="line.id">{{line.name}}</mat-option>
+                }
             </mat-select>
         </mat-form-field>
 
@@ -36,7 +37,7 @@
             <input type="number" matInput placeholder="Cantidad" formControlName="quantity">
         </mat-form-field>
         
-        <div fxFlex="15%">
+        <div fxFlex="20%">
             <div style="margin-top:5%;">
                 <label>Activo: </label>
                 <mat-radio-group formControlName="active">

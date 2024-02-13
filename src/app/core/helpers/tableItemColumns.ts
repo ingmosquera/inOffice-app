@@ -9,6 +9,11 @@ export class TableItemColumns{
                 ishidden:false,
             },
             {
+                name:"Padre",
+                dataKey :"parent",
+                ishidden:false,
+            },
+            {
                 name:"Cliente",
                 dataKey :"client",
                 ishidden:false,
@@ -36,6 +41,11 @@ export class TableItemColumns{
             {
                 name:"Sucursal",
                 dataKey :"branchName",
+                ishidden:false,
+            },
+            {
+                name:"Imagen",
+                dataKey :"urlImage",
                 ishidden:false,
             },
         ]

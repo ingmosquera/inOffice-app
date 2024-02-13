@@ -32,7 +32,7 @@ export class LoadFileListComponent implements OnInit {
     }
 
     private setConfigItemTable():void{
-        this.configItemTable = ConfigComponents.ConfigTable("",this.totalItems,TableLoadFileColumns.setConfigFileTableColumns(),true);
+        this.configItemTable = ConfigComponents.ConfigTable("",this.totalItems,TableLoadFileColumns.setConfigFileTableColumns(),false,true);
     }
 
     private configFileAll(page:number,pageSize:number):void{
@@ -58,17 +58,16 @@ export class LoadFileListComponent implements OnInit {
         return this.dialog.open(DialogComponent,{
             disableClose:false,
             data:{
-                title:"Gestión de clientes. Tipo de item",
+                title:"Configuración de archivos",
                 message:message,
                 confirm:confirm
             }
         });
     }
 
-
     onDataSelected(element:any):void{
-        const result:LoadFileConfig = JSON.parse(JSON.stringify(element));
-        this.router.navigate(['load-file-detail'],{queryParams:{activity:"2",data:result}});
+        const result = JSON.stringify(element);
+        this.router.navigate(['load-file-detail'],{queryParams:{dataclient:result,created:"1"}});
     }
 
     onPageItemChanged(event:any):void{

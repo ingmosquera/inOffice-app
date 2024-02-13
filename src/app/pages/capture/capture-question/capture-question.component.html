@@ -1,5 +1,5 @@
 <app-spinner></app-spinner>
-<form (ngSubmit)="onSubmit()" [formGroup]="captureQuestionForm" class="mt-4">
+<form [formGroup]="captureQuestionForm" class="mt-4">
     <div fxLayout="row wrap" fxLayoutGap="16px">
         <mat-form-field fxFlex="10%">
             <mat-label>Id</mat-label>
@@ -8,16 +8,16 @@
         
         <mat-form-field fxFlex="20%">
             <mat-label>Campo Capturador</mat-label>
-            <mat-select formControlName="captureId">
-                <mat-option value="1">Campo Capturador 1</mat-option>
-                <mat-option value="2">Campo Capturador 2</mat-option>
-                <mat-option value="3">Campo Capturador 3</mat-option>
+            <mat-select formControlName="detailFieldName">
+                @for (field of filedCaptureList; track field) {
+                    <mat-option [value]="field.id">{{field.field}}</mat-option>
+                }
             </mat-select>
         </mat-form-field>
 
         <mat-form-field fxFlex="25%">
             <mat-label>Pregunta</mat-label>
-            <input matInput placeholder="Pregunta" formControlName="question" readonly>
+            <input matInput placeholder="Pregunta" formControlName="question">
         </mat-form-field>
 
         <div fxFlex="20%">
@@ -30,7 +30,8 @@
             </div>
         </div>
     </div>
-    <button mat-raised-button color="primary" class="float-center" [disabled]="captureQuestionForm.invalid">{{labelButton}}</button>
+    <button mat-raised-button color="primary" style="margin-right:3%" (click)="onSubmit()"  class="float-center" [disabled]="captureQuestionForm.invalid">{{labelButton}}</button>
+    <button mat-raised-button color="accent" class="float-center" (click)="reset()">Cancelar</button>
     <h5>Los campos con * (asterisco) son obligatorios</h5>
 </form>
 

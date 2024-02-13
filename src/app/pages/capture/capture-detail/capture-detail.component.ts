@@ -3,14 +3,16 @@ import { SharedModule } from "../../../core/shared/shared.module";
 
 import { FormBuilder, FormGroup, Validators } from "@angular/forms";
 import { TableConfig } from "../../../core/modules/config-components/table/table-config";
-import { CaptureDetail } from "../../../core/modules/capture/capture";
+import { CaptureConfig, CaptureDetail } from "../../../core/modules/capture/capture";
 import { MatDialog } from "@angular/material/dialog";
-import { ActivatedRoute, Params } from "@angular/router";
-import { pagination } from "../../../core/constants/constants";
+import { ActivatedRoute, Params, Router } from "@angular/router";
 import { CaptureService } from "../../../services/captureService";
 import { ConfigComponents } from "../../../core/helpers/configComponents";
 import { TableCaptureColumns } from "../../../core/helpers/tableCaptureColumns";
 import { DialogComponent } from "../../../core/shared/components/dialog/dialog.component";
+import { pagination } from "../../../core/constants/constants";
+import { ItemType } from "../../../core/modules/configuration/conciguration";
+import { ConfigureService } from "../../../services/configureService";
 
 @Component({
     selector:"app-capture-detail",
@@ -19,7 +21,7 @@ import { DialogComponent } from "../../../core/shared/components/dialog/dialog.c
     imports:[SharedModule]
 })
 
-export class CaptureDetailComponent implements OnInit, AfterViewInit{
+export class CaptureDetailComponent implements OnInit,AfterViewInit{
     
     captureDetailForm!:FormGroup;
     labelButton!:string;
@@ -28,39 +30,55 @@ export class CaptureDetailComponent implements OnInit, AfterViewInit{
     dataSourceItem!:CaptureDetail[];
     loadingData:boolean = false;
     totalItems!:number;
-    dataclient!:CaptureDetail;
+    dataclient!:CaptureConfig;
     loadFileid!:number;
+    showButton:boolean = false;
+    itemTypeList!:ItemType[];
 
     constructor(private readonly fb:FormBuilder,
                 private readonly dialog:MatDialog,
                 private readonly route:ActivatedRoute,
-                private readonly captureService:CaptureService){}
+                private readonly captureService:CaptureService,
+                private readonly configureService:ConfigureService){}
 
     ngOnInit(): void {
         this.setConfigItemTable();
         this.route.queryParams.subscribe((params:Params)=> {
-            this.activityType = params['activity'];
-            this.dataclient = params['dataclient'];
+            if ('dataclient' in params)
+                this.dataclient =JSON.parse(params['dataclient'])
         });
-        if (this.dataclient==undefined){
-            this.activityType ="1";
-        }else{
-            this.loadFileid = this.dataclient.id !== undefined ? this.dataclient.id : 0;
-        }
-        this.labelButton = this.activityType=="1"?"Adicionar eetalle captura": this.activityType=="2"?"Actualizar detalle captura":"";
-        this.captureDetailForm = this.initForm();
+        
+        this.setCreateData();
+        this.loadList();
     }
 
     ngAfterViewInit() {
-        if (this.activityType=="2"){
-            this.loadData(this.loadFileid,pagination.PAGE_NUMBER,pagination.PAGE_SIZE);
+        if (this.dataclient != undefined){
+            this.getCaptureDetail(this.dataclient.id!,pagination.PAGE_NUMBER,pagination.PAGE_SIZE);
         }
     }
 
-    private loadData(id:number,page:number,pageSize:number):void{
+    private loadList(){
+        this.configureService.getItemTypeAll().subscribe(
+            data => {
+                this.itemTypeList = data.result;
+            },
+            error => {
+                const message = error.error.errorMessage==null?"Error al listar los tipos de item":error.error.errorMessage;
+                this.showMessage(message,false);
+            });
+    }
+
+    private setCreateData():void{
+        this.activityType ="1";
+        this.labelButton ="Crear Captura";
+        this.captureDetailForm = this.initForm();
+    }
+
+    private getCaptureDetail(idCapture:number,page:number,pageSize:number):void{
         const startIndex = (page-1) * pageSize==0?1:(page-1) * pageSize;
         const endIndex = startIndex + pageSize;
-        this.captureService.getCaptureDetailByCapture(id,startIndex,endIndex).subscribe(data=>{
+        this.captureService.getCaptureDetailByCapture(idCapture,startIndex,endIndex).subscribe((data)=>{
             if(data.result.totalRegisters ==0)
                 this.showMessage("No se encontró información con los parámetros ingresados.",false);
             
@@ -76,8 +94,20 @@ export class CaptureDetailComponent implements OnInit, AfterViewInit{
         this.setConfigItemTable();
     }
 
+    private loadData(data:CaptureDetail):FormGroup{
+        return this.fb.group({
+            id:[data.id,[Validators.required]],
+            field:[data.field,[Validators.required]],
+            itemType:[data.itemtype,[Validators.required]],
+            fieldType:[data.fieldtype,[Validators.required]],
+            required:["",[Validators.required]],
+            active:["",[Validators.required]],
+            search:["",[Validators.required]],
+        });
+    }
+
     private setConfigItemTable():void{
-        this.configItemTable = ConfigComponents.ConfigTable("",this.totalItems,TableCaptureColumns.setCaptureDetailTableColumns(),true);
+        this.configItemTable = ConfigComponents.ConfigTable("",this.totalItems,TableCaptureColumns.setCaptureDetailTableColumns(),false,true);
     }
 
     private showMessage(message :string,confirm:boolean){
@@ -93,24 +123,24 @@ export class CaptureDetailComponent implements OnInit, AfterViewInit{
 
     private createCapureDetalilData():CaptureDetail{
         const data:CaptureDetail={
-            capture:this.captureDetailForm.value.captureId,
+            capture:this.dataclient.id! ,
             field:this.captureDetailForm.value.field,
-            itemType:this.captureDetailForm.value.itemtype,
-            fieldType:this.captureDetailForm.value.fieldtype,
-            required:this.captureDetailForm.value.required,
-            active:this.captureDetailForm.value.active,
-            search:this.captureDetailForm.value.search,
+            itemtype:this.captureDetailForm.value.itemType,
+            fieldtype:this.captureDetailForm.value.fieldType,
+            required:this.captureDetailForm.value.required=="Y"?true:false,
+            active:this.captureDetailForm.value.active=="Y"?true:false,
+            search:this.captureDetailForm.value.search=="Y"?true:false,
         };
-
         return data;
     }
 
-    private createCaptureDetail():void{
+    createCaptureDetail():void{
         const dialogRef =  this.showMessage("Esta seguro que desea adicionar un detalle",true);
         dialogRef.componentInstance.confirmClik.subscribe(()=>{
             var client = this.createCapureDetalilData();
             this.captureService.createCaptureDetail(client).subscribe(
                 data => {
+                    this.getCaptureDetail(this.dataclient.id!,pagination.PAGE_NUMBER,pagination.PAGE_SIZE);
                     this.showMessage(data.result,false);    
                 },
                 error => {
@@ -128,6 +158,7 @@ export class CaptureDetailComponent implements OnInit, AfterViewInit{
             this.captureService.updateCaptureDetail(client).subscribe(
                 data => {
                     this.showMessage(data.result,false);    
+                    this.getCaptureDetail(this.dataclient.id!,pagination.PAGE_NUMBER,pagination.PAGE_SIZE);
                 },
                 error => {
                     const message = error.error.errorMessage==null?"Error al procesar la solicitd":error.error.errorMessage;
@@ -137,39 +168,47 @@ export class CaptureDetailComponent implements OnInit, AfterViewInit{
     }
 
     onSubmit(){
-        if(this.loadFileid==null || this.loadFileid<= 0){
-            this.showMessage("No se encontró el archivo de cargue para asociar.",false);
-        }else{
-            switch(this.activityType){
-                case "1":{
-                    this.createCaptureDetail();
-                    break;
-                }                
-                case "2":{
-                    this.updateCaptureDetail();
-                    break;
-                }                
-                default:{
-                    this.showMessage("Activdad no permitida",false);
-                }
+        switch(this.activityType){
+            case "1":{
+                this.createCaptureDetail();
+                break;
+            }                
+            case "2":{
+                this.updateCaptureDetail();
+                break;
+            }                
+            default:{
+                this.showMessage("Activdad no permitida",false);
             }
         }
     }
 
     onDataSelected(element:any){
         const result:CaptureDetail = JSON.parse(JSON.stringify(element));
+        this.activityType ="2";
+        this.labelButton ="Actulizar Capturador";
+
+        this.captureDetailForm= this.loadData(result);
+        this.captureDetailForm.get('active')?.setValue(result.active ? 'Y' : 'N');
+        this.captureDetailForm.get('search')?.setValue(result.search ? 'Y' : 'N');
+        this.captureDetailForm.get('required')?.setValue(result.required ? 'Y' : 'N');
+        this.captureDetailForm.get('itemType')?.setValue(result.itemtype.toString());
+        this.captureDetailForm.get('fieldType')?.setValue(result.fieldtype.toString());
     }
 
-    initForm():FormGroup{
+    private initForm():FormGroup{
         return this.fb.group({
-            id:[this.activityType!=="2"?"":this.captureDetailForm.value.id,[Validators.required]],
-            captureId:[this.activityType!=="2"?"":this.captureDetailForm.value.captureId,[Validators.required]],
-            field:[this.activityType!=="2"?"":this.captureDetailForm.value.field,[Validators.required]],
-            itemtype:[this.activityType!=="2"?"":this.captureDetailForm.value.itemtype,[Validators.required]],
-            fieldtype:[this.activityType!=="2"?"":this.captureDetailForm.value.fieldtype,[Validators.required]],
-            required:[this.activityType!=="2"?"":this.captureDetailForm.value.required,[Validators.required]],
-            active:[this.activityType!=="2"?"":this.captureDetailForm.value.active,[Validators.required]],
-            search:[this.activityType!=="2"?"":this.captureDetailForm.value.search,[Validators.required]],
+            id:["",""],
+            field:["",[Validators.required]],
+            itemType:["",[Validators.required]],
+            fieldType:["",[Validators.required]],
+            required:["",[Validators.required]],
+            active:["",[Validators.required]],
+            search:["",[Validators.required]],
         });
+    }
+
+    reset(){
+        this.setCreateData();
     }
 }

@@ -63,7 +63,7 @@ export class ClientRequests implements OnInit,AfterViewInit{
     }
 
     private setConfigItemTable():void{
-        this.configItemTable = ConfigComponents.ConfigTable("",this.totalItems,TableClientColumns.setClientRequestTableColumns(),true);
+        this.configItemTable = ConfigComponents.ConfigTable("",this.totalItems,TableClientColumns.setClientRequestTableColumns(),false,true);
     }
 
     private showMessage(message :string,confirm:boolean){

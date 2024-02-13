@@ -9,9 +9,19 @@ export class TableCaptureColumns{
                 ishidden:true,
             },
             {
+                name:"Nombre",
+                dataKey :"name",
+                ishidden:false,
+            },
+            {
                 name:"Client",
                 dataKey :"client",
                 ishidden:true,
+            },
+            {
+                name:"Cliente",
+                dataKey :"clientName",
+                ishidden:false,
             },
             {
                 name:"type",
@@ -25,12 +35,12 @@ export class TableCaptureColumns{
             },
             {
                 name:"configfile",
-                dataKey :"configfileId",
+                dataKey :"configFile",
                 ishidden:true,
             },
             {
-                name:"Archivo",
-                dataKey :"configfilename",
+                name:"Archivo Plano",
+                dataKey :"configFileName",
                 ishidden:false,
             },
             {
@@ -40,8 +50,18 @@ export class TableCaptureColumns{
             },
             {
                 name:"Acceso",
-                dataKey :"levelaccesname",
+                dataKey :"levelaccesName",
                 ishidden:false,
+            },
+            {
+                name:"Linea",
+                dataKey :"lineName",
+                ishidden:false,
+            },
+            {
+                name:"Linea",
+                dataKey :"line",
+                ishidden:true,
             },
             {
                 name:"Activo?",
@@ -55,12 +75,17 @@ export class TableCaptureColumns{
         return [
             {
                 name:"id",
-                dataKey :"captureId",
+                dataKey :"capture",
                 ishidden:true,
             },
             {
                 name:"Sucursal",
                 dataKey :"branch",
+                ishidden:true,
+            },
+            {
+                name:"Sucursal",
+                dataKey :"branchName",
                 ishidden:false,
             },
             {
@@ -80,8 +105,13 @@ export class TableCaptureColumns{
             },
             {
                 name:"capture",
-                dataKey :"captureid",
+                dataKey :"capture",
                 ishidden:true,
+            },
+            {
+                name:"Capturador",
+                dataKey :"captureName",
+                ishidden:false,
             },
             {
                 name:"campo",
@@ -91,20 +121,30 @@ export class TableCaptureColumns{
             {
                 name:"Tipo item",
                 dataKey :"itemtype",
+                ishidden:true,
+            },
+            {
+                name:"Tipo item",
+                dataKey :"itemtypeName",
                 ishidden:false,
             },
             {
                 name:"Tipo campo",
                 dataKey :"fieldtype",
+                ishidden:true,
+            },
+            {
+                name:"Tipo campo",
+                dataKey :"fieldtypeName",
                 ishidden:false,
             },
             {
-                name:"Obligatorio",
+                name:"Obligatorio?",
                 dataKey :"required",
                 ishidden:false,
             },
             {
-                name:"Es busqueda?",
+                name:"Es Busqueda?",
                 dataKey :"search",
                 ishidden:false,
             },
@@ -125,8 +165,13 @@ export class TableCaptureColumns{
             },
             {
                 name:"capture",
-                dataKey :"detailid",
+                dataKey :"captureDetail",
                 ishidden:true,
+            },
+            {
+                name:"Campo",
+                dataKey :"detailFieldName",
+                ishidden:false,
             },
             {
                 name:"Pregunta",
