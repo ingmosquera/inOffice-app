@@ -1,10 +1,13 @@
-<app-spinner></app-spinner>
-<!--<app-client-app (clientDataEvent)="receiveClientDataEvent($event)"></app-client-app>-->
-<form (ngSubmit)="onSubmit()" [formGroup]="clientRequestForm" class="mt-4">
+<form [formGroup]="clientRequestForm" class="mt-4">
     <div fxLayout="row wrap" fxLayoutGap="16px">
-        <mat-form-field fxFlex="70%">
+        <mat-form-field fxFlex="10%">
+            <mat-label>Id</mat-label>
+            <input type="number" matInput placeholder="Id" formControlName="id" readonly>
+        </mat-form-field>
+        
+        <mat-form-field fxFlex="60%">
             <mat-label>Nombre solicitante</mat-label>
-            <input  matInput placeholder="Nombre solicitante" formControlName="address">
+            <input  matInput placeholder="Nombre solicitante" formControlName="name">
         </mat-form-field>
         
         <div fxFlex="20%">
@@ -17,7 +20,8 @@
             </div>
         </div>
     </div>
-    <button mat-raised-button color="primary" class="float-center" [disabled]="clientRequestForm.invalid">{{labelButton}}</button>
+    <button type="submit" style="margin-right:3%" (click)="onSubmit()" mat-raised-button color="primary" class="float-center" [disabled]="clientRequestForm.invalid">{{labelButton}}</button>
+    <button mat-raised-button color="accent" class="float-center" (click)="reset()">Cancelar</button>
     <h5>Los campos con * (asterisco) son obligatorios</h5>
 </form>
 

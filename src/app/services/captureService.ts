@@ -1,4 +1,4 @@
-import { Injectable, enableProdMode } from "@angular/core";
+import { Injectable } from "@angular/core";
 import { environment } from "../../environments/environment";
 import { ApiResponse, ListPaginationResponse } from "../core/Response/response";
 import { Observable } from "rxjs";
@@ -9,71 +9,70 @@ import { CaptureBranch, CaptureConfig, CaptureDetail, CaptureDetailQuestions } f
 
 export class CaptureService{
     constructor(private readonly http:HttpClient){}
-    private method:string="file";
-
-    getCaptureAll(startPage:number,endPage:number):Observable<ApiResponse<ListPaginationResponse<CaptureConfig[]>>>{
-        const Url = `${environment.URLAPIMANAGEMENT}/${this.method}/getAll`
-        return this.http.get<ApiResponse<ListPaginationResponse<CaptureConfig[]>>>(Url);
-    }
-
-    getCaptureById(idfile:number):Observable<ApiResponse<CaptureConfig[]>>{
-        const Url = `${environment.URLAPIMANAGEMENT}/${this.method}/fields/${idfile}`
-        return this.http.get<ApiResponse<CaptureConfig[]>>(Url);
-    }
+    private method:string="capture";
 
     createCapture(data:CaptureConfig):Observable<ApiResponse<string>>{
-        const Url = `${environment.URLAPIMANAGEMENT}/${this.method}/login`
+        const Url = `${environment.URLAPICLIENT}/${this.method}/create`;
         return this.http.post<ApiResponse<string>>(Url,data);
     }
 
     updateCapture(data:CaptureConfig):Observable<ApiResponse<string>>{
-        const Url = `${environment.URLAPIMANAGEMENT}/${this.method}/login`
+        const Url = `${environment.URLAPICLIENT}/${this.method}/update?idCapture=${data.id}`;
         return this.http.post<ApiResponse<string>>(Url,data);
     }
-
     
-    getCaptureByBranch(id:number,startPage:number,endPage:number):Observable<ApiResponse<ListPaginationResponse<CaptureBranch[]>>>{
-        const Url = `${environment.URLAPIMANAGEMENT}/${this.method}/fields/${id}`
-        return this.http.get<ApiResponse<ListPaginationResponse<CaptureBranch[]>>>(Url);
-    }
-
-    createCaptureBranch(data:CaptureBranch):Observable<ApiResponse<string>>{
-        const Url = `${environment.URLAPIMANAGEMENT}/${this.method}/login`
-        return this.http.post<ApiResponse<string>>(Url,data);
-    }
-
-    updateCaptureBranch(data:CaptureBranch):Observable<ApiResponse<string>>{
-        const Url = `${environment.URLAPIMANAGEMENT}/${this.method}/login`
-        return this.http.post<ApiResponse<string>>(Url,data);
-    }
-
-    getCaptureDetailByCapture(id:number,startPage:number,endPage:number):Observable<ApiResponse<ListPaginationResponse<CaptureDetail[]>>>{
-        const Url = `${environment.URLAPIMANAGEMENT}/${this.method}/fields/${id}`
-        return this.http.get<ApiResponse<ListPaginationResponse<CaptureDetail[]>>>(Url);
+    getCaptureAll(startPage:number,endPage:number):Observable<ApiResponse<ListPaginationResponse<CaptureConfig[]>>>{
+        const Url = `${environment.URLAPICLIENT}/${this.method}/getAll?PageNumber=${startPage}&PageSize=${endPage}`;
+        return this.http.get<ApiResponse<ListPaginationResponse<CaptureConfig[]>>>(Url);
     }
 
     createCaptureDetail(data:CaptureDetail):Observable<ApiResponse<string>>{
-        const Url = `${environment.URLAPIMANAGEMENT}/${this.method}/login`
+        const Url = `${environment.URLAPICLIENT}/${this.method}/createDetail`;
         return this.http.post<ApiResponse<string>>(Url,data);
     }
 
     updateCaptureDetail(data:CaptureDetail):Observable<ApiResponse<string>>{
-        const Url = `${environment.URLAPIMANAGEMENT}/${this.method}/login`
+        const Url = `${environment.URLAPICLIENT}/${this.method}/updateDetail?idCapture=${data.id}`;
+        return this.http.post<ApiResponse<string>>(Url,data);
+    }
+    
+    getCaptureDetailByCapture(id:number,startPage:number,endPage:number):Observable<ApiResponse<ListPaginationResponse<CaptureDetail[]>>>{
+        const Url = `${environment.URLAPICLIENT}/${this.method}/getDetail?PageNumber=${startPage}&PageSize=${endPage}&idCapture=${id}`;
+        return this.http.get<ApiResponse<ListPaginationResponse<CaptureDetail[]>>>(Url);
+    }
+
+    createCaptureBranch(data:CaptureBranch):Observable<ApiResponse<string>>{
+        const Url = `${environment.URLAPICLIENT}/${this.method}/createBranch`;
         return this.http.post<ApiResponse<string>>(Url,data);
     }
 
-    getCaptureDetailByQuestion(id:number,startPage:number,endPage:number):Observable<ApiResponse<ListPaginationResponse<CaptureDetailQuestions[]>>>{
-        const Url = `${environment.URLAPIMANAGEMENT}/${this.method}/fields/${id}`
-        return this.http.get<ApiResponse<ListPaginationResponse<CaptureDetailQuestions[]>>>(Url);
+    updateCaptureBranch(data:CaptureBranch):Observable<ApiResponse<string>>{
+        const Url = `${environment.URLAPICLIENT}/${this.method}/updateBranch?idCapture=${data.id}`;
+        return this.http.post<ApiResponse<string>>(Url,data);
+    }
+    
+    getCaptureByBranch(id:number,startPage:number,endPage:number):Observable<ApiResponse<ListPaginationResponse<CaptureBranch[]>>>{
+        const Url = `${environment.URLAPICLIENT}/${this.method}/getBranch?PageNumber=${startPage}&PageSize=${endPage}&idCapture=${id}`;
+        return this.http.get<ApiResponse<ListPaginationResponse<CaptureBranch[]>>>(Url);
     }
 
     createDetailQuestion(data:CaptureDetailQuestions):Observable<ApiResponse<string>>{
-        const Url = `${environment.URLAPIMANAGEMENT}/${this.method}/login`
+        const Url = `${environment.URLAPICLIENT}/${this.method}/createDetailQuestion`;
         return this.http.post<ApiResponse<string>>(Url,data);
     }
 
     updateDetailQuestion(data:CaptureDetailQuestions):Observable<ApiResponse<string>>{
-        const Url = `${environment.URLAPIMANAGEMENT}/${this.method}/login`
+        const Url = `${environment.URLAPICLIENT}/${this.method}/updateDetailQuestion?idCapture=${data.id}`;
         return this.http.post<ApiResponse<string>>(Url,data);
+    }
+
+    getCaptureDetailByQuestion(id:number,startPage:number,endPage:number):Observable<ApiResponse<ListPaginationResponse<CaptureDetailQuestions[]>>>{
+        const Url = `${environment.URLAPICLIENT}/${this.method}/getDetailQuestion?PageNumber=${startPage}&PageSize=${endPage}&idCapture=${id}`;
+        return this.http.get<ApiResponse<ListPaginationResponse<CaptureDetailQuestions[]>>>(Url);
+    }
+    
+    getCaptureFiledList(id:number,):Observable<ApiResponse<CaptureDetail[]>>{
+        const Url = `${environment.URLAPICLIENT}/${this.method}/getFieldActiveList?idCapture=${id}`;
+        return this.http.get<ApiResponse<CaptureDetail[]>>(Url);
     }
 }

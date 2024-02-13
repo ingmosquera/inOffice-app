@@ -1,16 +1,10 @@
-<app-spinner></app-spinner>
-<form (ngSubmit)="onSubmit()" [formGroup]="fileFieldForm" class="mt-4">
+<form [formGroup]="fileFieldForm" class="mt-4">
     <div fxLayout="row wrap" fxLayoutGap="16px">
         <mat-form-field fxFlex="8%">
             <mat-label>Id</mat-label>
             <input type="number" matInput placeholder="Id" formControlName="id" readonly>
         </mat-form-field>
         
-        <mat-form-field fxFlex="8%">
-            <mat-label>Archivo</mat-label>
-            <input type="number" matInput placeholder="Archivo" formControlName="configfileId" readonly>
-        </mat-form-field>
-
         <mat-form-field fxFlex="20%">
             <mat-label>Nombre campo</mat-label>
             <input matInput placeholder="Campo" formControlName="field">
@@ -45,7 +39,8 @@
             </div>
         </div>
     </div>
-    <button mat-raised-button color="primary" class="float-center" [disabled]="fileFieldForm.invalid">{{labelButton}}</button>
+    <button mat-raised-button color="primary" style="margin-right:3%" (click)="onSubmit()" class="float-center" [disabled]="fileFieldForm.invalid">{{labelButton}}</button>
+    <button mat-raised-button color="accent" class="float-center" (click)="reset()">Cancelar</button>
     <h5>Los campos con * (asterisco) son obligatorios</h5>
 </form>
 

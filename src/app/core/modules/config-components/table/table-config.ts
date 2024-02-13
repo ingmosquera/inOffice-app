@@ -4,6 +4,7 @@ export interface TableConfig {
     pageSize:number;
     totalItems:number;
     showDetails:boolean;
+    updateData:boolean;
     showPageSizeOptions:number[]
     tableColumns:TableColumn[]
 }

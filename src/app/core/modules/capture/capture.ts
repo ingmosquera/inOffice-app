@@ -4,25 +4,36 @@ export interface CaptureConfig extends Base{
     id?:number,
     name:string,
     client:string,
+    clientName?:string,
     type:number,
-    configfileId:number,
+    typeName?:string,
+    configFile:number,
+    configFileName?:string,
     line:string,
-    levelacces:string
+    lineName?:string,
+    levelacces:string,
+    levelaccesName?:string,
     active:boolean
 }
 
 export interface CaptureBranch{
-    captureId:number,
+    id?:number,
+    capture:number,
+    captureName?:string,
     branch:string,
+    branchName?:string,
     active:boolean,
 }
 
 export interface CaptureDetail{
     id?:number,
-    captureId:number,
+    capture:number,
+    captureName?:string,
     field:string,
     itemtype:string,
+    itemTypeName?:string,
     fieldtype:string,
+    fieldTypeName?:string,
     required:boolean,
     active:boolean,
     search:boolean,
@@ -30,7 +41,8 @@ export interface CaptureDetail{
 
 export interface CaptureDetailQuestions{
     id?:number,
-    capturedetailiId:number,
+    captureDetail:number,
+    DetailFieldName?:string,
     question:string,
     active:boolean,
 }

@@ -37,6 +37,9 @@ export class TableComponent implements OnInit,AfterViewInit    {
     this.displayedColumns  = this.configTable.tableColumns.map((tableColumns:TableColumn)=> tableColumns.dataKey);
     if(this.configTable.showDetails)
       this.displayedColumns.push("action");
+
+    if(this.configTable.updateData)
+      this.displayedColumns.push("edit");
   }
 
   ngAfterViewInit() {

@@ -1,15 +1,14 @@
 import { Component, OnInit } from "@angular/core";
 import { TableConfig } from "../../../core/modules/config-components/table/table-config";
 import { LoadFileConfig } from "../../../core/modules/loadfile/loadfile";
-import { ClientModel } from "../../../core/modules/client/client";
 import { SharedModule } from "../../../core/shared/shared.module";
 import { Router } from "@angular/router";
 import { DialogComponent } from "../../../core/shared/components/dialog/dialog.component";
 import { MatDialog } from "@angular/material/dialog";
 import { ConfigComponents } from "../../../core/helpers/configComponents";
 import { TableLoadFileColumns } from "../../../core/helpers/tableloadfileColumns";
-import { FileService } from "../../../services/fileService";
 import { pagination } from "../../../core/constants/constants";
+import { ConfigFileService } from "../../../services/configFileService";
 
 @Component({
     selector:"app-load-file-list",
@@ -23,25 +22,23 @@ export class LoadFileListComponent implements OnInit {
     dataSourceItem! : LoadFileConfig[];
     loadingData:boolean = false;
     totalItems!:number;
-    clientModel!:ClientModel;
-    
 
     constructor(private readonly router:Router,
                 private readonly dialog: MatDialog,
-                private readonly fileService:FileService){}
+                private readonly configFileService:ConfigFileService){}
     ngOnInit(): void {
         this.setConfigItemTable();
         this.configFileAll(pagination.PAGE_NUMBER,pagination.PAGE_SIZE);
     }
 
     private setConfigItemTable():void{
-        this.configItemTable = ConfigComponents.ConfigTable("",this.totalItems,TableLoadFileColumns.setConfigFileTableColumns(),true);
+        this.configItemTable = ConfigComponents.ConfigTable("",this.totalItems,TableLoadFileColumns.setConfigFileTableColumns(),false,true);
     }
 
     private configFileAll(page:number,pageSize:number):void{
         const startIndex = (page-1) * pageSize==0?1:(page-1) * pageSize;
         const endIndex = startIndex + pageSize;
-        this.fileService.getLoadFileAll(startIndex,endIndex).subscribe(data=>{
+        this.configFileService.getConigFileAll(startIndex,endIndex).subscribe(data=>{
             if(data.result.totalRegisters ==0)
                 this.showMessage("No se encontró información con los parámetros ingresados.",false);
             
@@ -61,17 +58,16 @@ export class LoadFileListComponent implements OnInit {
         return this.dialog.open(DialogComponent,{
             disableClose:false,
             data:{
-                title:"Gestión de clientes. Tipo de item",
+                title:"Configuración de archivos",
                 message:message,
                 confirm:confirm
             }
         });
     }
 
-
     onDataSelected(element:any):void{
-        const result:LoadFileConfig = JSON.parse(JSON.stringify(element));
-        this.router.navigate(['load-file-detail'],{queryParams:{activity:"2",data:result}});
+        const result = JSON.stringify(element);
+        this.router.navigate(['load-file-detail'],{queryParams:{dataclient:result,created:"1"}});
     }
 
     onPageItemChanged(event:any):void{

@@ -6,9 +6,8 @@ import { LoadFileBranchComponent } from "../file-branch/file-branch.component";
 import { LoadFileConfig } from "../../../core/modules/loadfile/loadfile";
 import { DialogComponent } from "../../../core/shared/components/dialog/dialog.component";
 import { MatDialog } from "@angular/material/dialog";
-import { FileService } from "../../../services/fileService";
-import { ActivatedRoute, Params } from "@angular/router";
-import { ClientService } from "../../../services/clientService";
+import { ActivatedRoute, Params, Router } from "@angular/router";
+import { ConfigFileService } from "../../../services/configFileService";
 
 @Component({
     selector: "app-file-config",
@@ -20,48 +19,85 @@ import { ClientService } from "../../../services/clientService";
 export class LoadFileConfigComponent implements OnInit{
     panelOpenState:boolean=false;
     panelOpenDetailState:boolean=false;
-    FileConfigForm!:FormGroup;
+    fileConfigForm!:FormGroup;
     labelButton!:string;
     activityType!:string;
     dataLoad!:LoadFileConfig;
+    showButton:boolean = false;
+    puedeEditar:boolean = false;
 
     constructor(private readonly fb:FormBuilder,
                 private readonly dialog:MatDialog,
                 private readonly route:ActivatedRoute,
-                private readonly loadFileService:FileService,
-                private readonly clientService:ClientService){
+                private readonly configFileService:ConfigFileService,
+                private readonly router:Router){
 
     }
     ngOnInit(): void {
         this.route.queryParams.subscribe((params:Params)=> {
-            this.activityType = params['activity'];
-            this.dataLoad = params['dataclient'];
+            if ('dataclient' in params)
+                this.dataLoad =JSON.parse(params['dataclient'])
+
+            if ('created' in params){
+                this.showButton=true;
+                this.puedeEditar=false;    
+            }
         });
-        if (this.dataLoad==undefined){
+
+        if (this.dataLoad ==undefined){
             this.activityType ="1";
+            this.puedeEditar=true;
+        }else{
+            this.activityType ="2";
+            this.puedeEditar=false;
         }
-        this.labelButton = this.activityType=="1"?"Crear configuración": this.activityType=="2"?"Actualizar configuración":"";
-        this.FileConfigForm = this.initForm();
+
+        this.setCreateData();
     }
+
+    private setCreateData():void{
+        this.activityType =this.activityType;
+        this.labelButton =this.activityType=="2"?"Actulizar archivo" :"Crear archivo";
+        this.fileConfigForm = this.initForm();
+        if(this.dataLoad!= undefined){
+            this.fileConfigForm= this.loadData();
+            this.fileConfigForm.get('active')?.setValue(this.dataLoad.active ? 'Y' : 'N');
+            this.fileConfigForm.get('client')?.setValue(this.dataLoad.client?.toString());
+            this.fileConfigForm.get('line')?.setValue(this.dataLoad.line.toString());
+            this.fileConfigForm.get('levelacces')?.setValue(this.dataLoad.levelAcces?.toString());
+        }
+    }
+
+    private loadData():FormGroup{
+        return this.fb.group({
+            id:[this.dataLoad.id,""],
+            client:[this.dataLoad.client,[Validators.required]],
+            name:[this.dataLoad.name,[Validators.required]],
+            line:[this.dataLoad.line,[Validators.required]],
+            levelacces:[this.dataLoad.levelAcces,[Validators.required]],
+            active:["",[Validators.required]],
+        });
+    }
+
 
     private initForm():FormGroup{
         return this.fb.group({
-            id:[this.activityType!=="2"?"":this.dataLoad.id,],
-            client:[this.activityType!=="2"?"":this.dataLoad.client,[Validators.required]],
-            name:[this.activityType!=="2"?"":this.dataLoad.name,[Validators.required]],
-            line:[this.activityType!=="2"?"":this.dataLoad.line,[Validators.required]],
-            levelacces:[this.activityType!=="2"?"":this.dataLoad.levelacces,[Validators.required]],
-            active:[this.activityType!=="2"?"":this.dataLoad.active,[Validators.required]],
+            id:["",],
+            client:["",[Validators.required]],
+            name:["",[Validators.required]],
+            line:["",[Validators.required]],
+            levelacces:["",[Validators.required]],
+            active:["",[Validators.required]],
         });
     }
 
     private createFileConfig():LoadFileConfig{
         const data:LoadFileConfig = {
-            client:this.FileConfigForm.value.client,
-            name:this.FileConfigForm.value.name,
-            active:this.FileConfigForm.value.active,
-            line:this.FileConfigForm.value.line,
-            levelacces:this.FileConfigForm.value.levelacces,
+            client:this.fileConfigForm.value.client,
+            name:this.fileConfigForm.value.name,
+            active:this.fileConfigForm.value.active=="Y"?true:false,
+            line:this.fileConfigForm.value.line,
+            levelAcces:this.fileConfigForm.value.levelacces,
             userCreated:"User Id",
             userNameCreated:"User Name",
             dateCreated: new Date(),
@@ -76,8 +112,11 @@ export class LoadFileConfigComponent implements OnInit{
     private createLoadFile():void{
         const dialogRef =  this.showMessage("Esta seguro que desea crear el cargue de archivo ",true);
             dialogRef.componentInstance.confirmClik.subscribe(()=>{
-                this.loadFileService.createConfigFile(this.createFileConfig()).subscribe(
+                this.configFileService.createConfigFile(this.createFileConfig()).subscribe(
                     data => {
+                        this.router.navigateByUrl('/', {skipLocationChange: true}).then(() => {
+                            this.router.navigate(['load-file']);
+                        });
                         this.showMessage(data.result,false);    
                     },
                     error => {
@@ -88,15 +127,16 @@ export class LoadFileConfigComponent implements OnInit{
     }
 
     private updateLoadFile():void{
-        if (this.FileConfigForm.value.id==null || this.FileConfigForm.value.id==""){
+        if (this.fileConfigForm.value.id==null || this.fileConfigForm.value.id==""){
             this.showMessage("No se encontró una configuración asociada",false)
         }else{
             const dialogRef =  this.showMessage("Esta seguro que desea actualizar el cargue de archivo ",true);
             dialogRef.componentInstance.confirmClik.subscribe(()=>{
             var dataFile = this.createFileConfig();
-            dataFile.id = this.FileConfigForm.value.id;
-            this.loadFileService.updateConfigFile(this.createFileConfig()).subscribe(
+            dataFile.id = this.fileConfigForm.value.id;
+            this.configFileService.updateConfigFile(dataFile).subscribe(
                 data => {
+                    this.refreshPage(dataFile);
                     this.showMessage(data.result,false);    
                 },
                 error => {
@@ -135,5 +175,16 @@ export class LoadFileConfigComponent implements OnInit{
         }
     };
 
-    
+    newCapture(){
+        this.router.navigateByUrl('/', {skipLocationChange: true}).then(() => {
+            this.router.navigate(['load-file-detail']);
+        });
+    }
+
+    private refreshPage(dataFile:LoadFileConfig){
+        this.router.navigateByUrl('/', {skipLocationChange: true}).then(() => {
+            this.router.navigate(['load-file-detail'],{queryParams:{dataclient:JSON.stringify(dataFile)}});
+        });
+    }
 }
+    

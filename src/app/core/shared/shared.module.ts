@@ -18,7 +18,7 @@ import { CommonModule } from "@angular/common";
 import { MatPaginatorModule,MatPaginatorIntl } from "@angular/material/paginator";
 import { MatPaginatorIntEs } from "../helpers/matPaginatorIntEs";
 import { MatDividerModule } from '@angular/material/divider';
-import { MatDialogModule} from '@angular/material/dialog';
+import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { MatSortModule } from "@angular/material/sort";
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatExpansionModule } from '@angular/material/expansion';
@@ -31,6 +31,7 @@ import { NotFoundComponent } from "./components/not-found/not-found.component";
 import { DialogComponent } from "./components/dialog/dialog.component";
 import { TableComponent } from "./components/table/table.component";
 import { ButtonsComponent } from "./components/buttons/buttons.component";
+import { DialogOverViewComponent } from "./components/dialog-overview/dialog-overview.component";
 
 @NgModule({
     imports:[
@@ -53,6 +54,7 @@ import { ButtonsComponent } from "./components/buttons/buttons.component";
         MatDividerModule,
         MatDialogModule,
         DialogComponent,
+        DialogOverViewComponent,
         MatSortModule,
         MatProgressSpinnerModule,
         MatExpansionModule,
@@ -88,6 +90,7 @@ import { ButtonsComponent } from "./components/buttons/buttons.component";
         MatDividerModule,
         MatDialogModule,
         DialogComponent,
+        DialogOverViewComponent,
         MatSortModule,
         MatProgressSpinnerModule,
         MatExpansionModule,
@@ -97,7 +100,7 @@ import { ButtonsComponent } from "./components/buttons/buttons.component";
         SpinnerComponent,
     ],
     providers:[
-        { provide: MatPaginatorIntl, useClass:MatPaginatorIntEs }
+        { provide: MatPaginatorIntl, useClass:MatPaginatorIntEs },
     ],
 })
 

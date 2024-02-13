@@ -5,6 +5,7 @@ export class ConfigComponents{
     static ConfigTable(tittle:string,
                        totalItems:number,
                        tableColumns: TableColumn[],
+                       editTable:boolean,
                        showDetails:boolean = false,
                        pageSize:number = pagination.PAGE_SIZE,
                        showPageSizeOptions:number[] = pagination.PAGE_SHOW_PAGE_SIZE):TableConfig{
@@ -14,7 +15,8 @@ export class ConfigComponents{
                 totalItems:totalItems,
                 showDetails:showDetails,
                 showPageSizeOptions:showPageSizeOptions,
-                tableColumns:tableColumns
+                tableColumns:tableColumns,
+                updateData:editTable
             }
    }
 }

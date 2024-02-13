@@ -5,36 +5,60 @@
   <mat-label>Buscador</mat-label>
   <input matInput (keyup)="applyFilter($event)" placeholder="Buscador">
 </mat-form-field>
-
-<mat-table [dataSource]="tableDataSource" class="mat-elevation-z8" matSort
-(matSortChange)="announceSortChange($event)"> 
-  <ng-container *ngFor="let column of configTable.tableColumns" [matColumnDef]="column.dataKey" >
-    <mat-header-cell [hidden]="column.ishidden" *matHeaderCellDef mat-sort-header> {{column.name}}</mat-header-cell>
-    <mat-cell [hidden]="column.ishidden" *matCellDef="let element; let i=dataIndex;"> {{element[column.dataKey]}}</mat-cell>
-  </ng-container>
-  <ng-container *ngIf="configTable.showDetails">
-    <ng-container matColumnDef="action">
-      <mat-header-cell *matHeaderCellDef>Mas info</mat-header-cell>
-      <mat-cell *matCellDef="let element">
-        <button mat-icon-button (click)="showDetails(element)">
-          <mat-icon>info</mat-icon>
-        </button>
+<div class="table-responsive">
+  <mat-table [dataSource]="tableDataSource" class="mat-elevation-z8" matSort
+  (matSortChange)="announceSortChange($event)"> 
+    <ng-container *ngFor="let column of configTable.tableColumns" [matColumnDef]="column.dataKey" >
+      <mat-header-cell [hidden]="column.ishidden" *matHeaderCellDef mat-sort-header> {{column.name}}</mat-header-cell>
+      <mat-cell [hidden]="column.ishidden" *matCellDef="let element; let i=dataIndex;"> 
+        <ng-container *ngIf="column.dataKey !== 'urlImage' && column.dataKey !== 'active' && column.dataKey !== 'required' && column.dataKey !== 'search'">
+          {{element[column.dataKey]}}
+        </ng-container>
+        <ng-container *ngIf="column.dataKey === 'urlImage'">
+            <p *ngIf="element[column.dataKey]!=null" >Con imagen</p>
+            <p *ngIf="element[column.dataKey]==null" style="color: red;">Sin imagen</p>
+        </ng-container>
+        <ng-container *ngIf="column.dataKey === 'active' || column.dataKey === 'required' || column.dataKey === 'search'">
+          <p *ngIf="element[column.dataKey]" >Si</p>
+          <p *ngIf="!element[column.dataKey]" style="color: red;">No</p>
+      </ng-container>
       </mat-cell>
     </ng-container>
-  </ng-container>
-  <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
-  <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
-</mat-table>
+    <ng-container *ngIf="configTable.showDetails">
+      <ng-container matColumnDef="action">
+        <mat-header-cell *matHeaderCellDef>Mas info</mat-header-cell>
+        <mat-cell *matCellDef="let element">
+          <button mat-icon-button (click)="showDetails(element)">
+            <mat-icon>info</mat-icon>
+          </button>
+        </mat-cell>
+      </ng-container>
+    </ng-container>
 
-<mat-paginator 
- [length] ="configTable.totalItems"
- [pageSize] = "configTable.pageSize"
- [pageSizeOptions] = "configTable.showPageSizeOptions"
- (page)="onPageChange($event)"></mat-paginator>
-
- <div *ngIf="loadingData" class="spinner-container">
-  <mat-progress-spinner
-    color="primary" 
-    mode="indeterminate">
-  </mat-progress-spinner>
+    <ng-container *ngIf="configTable.showDetails">
+      <ng-container matColumnDef="edit">
+        <mat-header-cell *matHeaderCellDef>Editar</mat-header-cell>
+        <mat-cell *matCellDef="let element">
+          <button mat-icon-button>
+            <mat-icon>edit</mat-icon>
+          </button>
+        </mat-cell>
+      </ng-container>
+    </ng-container>
+    <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+    <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+  </mat-table>
+  
+  <mat-paginator 
+   [length] ="configTable.totalItems"
+   [pageSize] = "configTable.pageSize"
+   [pageSizeOptions] = "configTable.showPageSizeOptions"
+   (page)="onPageChange($event)"></mat-paginator>
+  
+   <div *ngIf="loadingData" class="spinner-container">
+    <mat-progress-spinner
+      color="primary" 
+      mode="indeterminate">
+    </mat-progress-spinner>
+  </div>
 </div>

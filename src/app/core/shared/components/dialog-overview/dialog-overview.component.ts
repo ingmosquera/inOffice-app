@@ -2,7 +2,7 @@ import { Component, EventEmitter, Inject, Input, Output } from "@angular/core";
 import { DetailItem } from "../../../modules/item/dataItem";
 import { MatButtonModule } from "@angular/material/button";
 import { MAT_DIALOG_DATA, MatDialogActions, MatDialogContent, MatDialogRef, MatDialogTitle } from "@angular/material/dialog";
-import { CommonModule, DatePipe } from "@angular/common";
+import { CommonModule } from "@angular/common";
 import { MatFormFieldModule } from "@angular/material/form-field";
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from "@angular/forms";
 import { MatInputModule } from "@angular/material/input";
@@ -22,7 +22,7 @@ export class DialogOverViewComponent{
                 @Inject(MAT_DIALOG_DATA) public data:any
         ){}
     
-        ngOnInit(){
+    ngOnInit(){
         this.createFormGroup();
     }
     
@@ -46,10 +46,9 @@ export class DialogOverViewComponent{
                 fieldId:field.fieldId,
                 filedName:field.filedName,
                 value:this.dynamicForm.get(field.fieldId.toString())?.value,
-                urlImage:field.urlImageItem,
                 userCreated:field.userCreated,
                 userNameCreated:field.userNameCreated,
-                dateCreated:field.userNameCreated,
+                dateCreated:field.dateCreated,
                 userModified:"CodigoID",
                 userNameModified:"Juadores ",
                 dateModified:field.dateModified,

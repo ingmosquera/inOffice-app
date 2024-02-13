@@ -5,11 +5,13 @@ import { TableConfig } from "../../../core/modules/config-components/table/table
 import { MatDialog } from "@angular/material/dialog";
 import { ActivatedRoute, Params } from "@angular/router";
 import { CaptureService } from "../../../services/captureService";
-import { CaptureBranch } from "../../../core/modules/capture/capture";
+import { CaptureBranch, CaptureConfig } from "../../../core/modules/capture/capture";
 import { pagination } from "../../../core/constants/constants";
 import { ConfigComponents } from "../../../core/helpers/configComponents";
 import { TableCaptureColumns } from "../../../core/helpers/tableCaptureColumns";
 import { DialogComponent } from "../../../core/shared/components/dialog/dialog.component";
+import { ConfigureService } from "../../../services/configureService";
+import { Branch } from "../../../core/modules/configuration/conciguration";
 
 @Component({
     selector:"app-captura-branch",
@@ -19,44 +21,64 @@ import { DialogComponent } from "../../../core/shared/components/dialog/dialog.c
 })
 
 export class CaptureBrachComponent implements OnInit,AfterViewInit{
-    captureQuestionForm!:FormGroup;
+    captureBranchForm!:FormGroup;
     labelButton!:string;
     activityType!:string;
     configItemTable!:TableConfig;
     dataSourceItem!:CaptureBranch[];
     loadingData:boolean = false;
     totalItems!:number;
-    dataclient!:CaptureBranch;
+    dataclient!:CaptureConfig;
     loadFileid!:number;
-
+    showBranch!:boolean;
+    branchList!:Branch[]
 
     constructor(private readonly fb:FormBuilder,
                 private readonly dialog:MatDialog,
                 private readonly route:ActivatedRoute,
-                private readonly captureService:CaptureService){}
+                private readonly captureService:CaptureService,
+                private readonly configureService:ConfigureService){}
 
     ngOnInit(): void {
         this.setConfigItemTable();
         this.route.queryParams.subscribe((params:Params)=> {
-            this.activityType = params['activity'];
-            this.dataclient = params['dataclient'];
+            this.dataclient = JSON.parse(params['dataclient']);
         });
-        if (this.dataclient==undefined){
-            this.activityType ="1";
-        }else{
-            this.loadFileid = this.dataclient.captureId;
+        this.setCreateData();
+        this.loadList();
+    }
+
+    private setCreateData():void{
+        if (this.dataclient != undefined){
+            if (this.dataclient.levelacces=="SU"){
+                this.showBranch = true;
+            }else{
+                this.showBranch = false;
+            }
         }
-        this.labelButton = this.activityType=="1"?"Adicionar eetalle captura": this.activityType=="2"?"Actualizar detalle captura":"";
-        this.captureQuestionForm = this.initForm();
+        this.activityType ="1";
+        this.labelButton ="Crear sucursal";
+        this.captureBranchForm = this.initForm();
     }
 
     ngAfterViewInit() {
-        if (this.activityType=="2"){
-            this.loadData(this.loadFileid,pagination.PAGE_NUMBER,pagination.PAGE_SIZE);
+        if (this.dataclient != undefined && this.dataclient.levelacces=="SU"){
+            this.GetCaptureBranch(this.dataclient.id!,pagination.PAGE_NUMBER,pagination.PAGE_SIZE);
         }
     }
 
-    private loadData(id:number,page:number,pageSize:number):void{
+    private loadList(){
+        this.configureService.getBranchAll().subscribe(
+            data => {
+                this.branchList = data.result;
+            },
+            error => {
+                const message = error.error.errorMessage==null?"Error al listar las sucursales":error.error.errorMessage;
+                this.showMessage(message,false);
+            });
+    }
+
+    private GetCaptureBranch(id:number,page:number,pageSize:number):void{
         const startIndex = (page-1) * pageSize==0?1:(page-1) * pageSize;
         const endIndex = startIndex + pageSize;
         this.captureService.getCaptureByBranch(id,startIndex,endIndex).subscribe(data=>{
@@ -76,7 +98,7 @@ export class CaptureBrachComponent implements OnInit,AfterViewInit{
     }
 
     private setConfigItemTable():void{
-        this.configItemTable = ConfigComponents.ConfigTable("",this.totalItems,TableCaptureColumns.setCaptureBranchTableColumns(),true);
+        this.configItemTable = ConfigComponents.ConfigTable("",this.totalItems,TableCaptureColumns.setCaptureBranchTableColumns(),false,true);
     }
 
     private showMessage(message :string,confirm:boolean){
@@ -92,9 +114,9 @@ export class CaptureBrachComponent implements OnInit,AfterViewInit{
 
     private createCaptureBranchData():CaptureBranch{
         const data:CaptureBranch={
-            captureId:this.captureQuestionForm.value.captureId,
-            branch:this.captureQuestionForm.value.branch,
-            active:this.captureQuestionForm.value.active,
+            capture:this.dataclient.id!,
+            branch:this.captureBranchForm.value.branch,
+            active:this.captureBranchForm.value.active=="Y"?true:false,
         };
         return data;
     }
@@ -104,6 +126,8 @@ export class CaptureBrachComponent implements OnInit,AfterViewInit{
         dialogRef.componentInstance.confirmClik.subscribe(()=>{
             this.captureService.createCaptureBranch(this.createCaptureBranchData()).subscribe(
                 data => {
+                    this.GetCaptureBranch(this.dataclient.id!,pagination.PAGE_NUMBER,pagination.PAGE_SIZE);
+                    this.setCreateData();
                     this.showMessage(data.result,false);    
                 },
                 error => {
@@ -113,11 +137,33 @@ export class CaptureBrachComponent implements OnInit,AfterViewInit{
         });
     }
 
+    private initForm():FormGroup{
+        return this.fb.group({
+            id:["",""],
+            branch:["",[Validators.required]],
+            active:["",[Validators.required]],
+        });
+    }
+
+    private loadData(data:CaptureBranch) :FormGroup{
+        return this.fb.group({
+            id:[data.id,[Validators.required]],
+            branch:[data.branch,[Validators.required]],
+            active:["",[Validators.required]],
+        });
+    }
+
+
     private updateCaptureBranch():void{
         const dialogRef =  this.showMessage("Esta seguro que desea actualizar una sucursal",true);
+        
         dialogRef.componentInstance.confirmClik.subscribe(()=>{
-            this.captureService.updateCaptureBranch(this.createCaptureBranchData()).subscribe(
+            let branch = this.createCaptureBranchData();
+            branch.id = this.captureBranchForm.value.id;
+            this.captureService.updateCaptureBranch(branch).subscribe(
                 data => {
+                    this.GetCaptureBranch(this.dataclient.id!,pagination.PAGE_NUMBER,pagination.PAGE_SIZE);
+                    this.setCreateData();
                     this.showMessage(data.result,false);    
                 },
                 error => {
@@ -128,34 +174,33 @@ export class CaptureBrachComponent implements OnInit,AfterViewInit{
     }
 
     onSubmit(){
-        if(this.loadFileid==null || this.loadFileid<= 0){
-            this.showMessage("No se encontró el archivo de cargue para asociar.",false);
-        }else{
-            switch(this.activityType){
-                case "1":{
-                    this.createCaptureBranch();
-                    break;
-                }                
-                case "2":{
-                    this.updateCaptureBranch();
-                    break;
-                }                
-                default:{
-                    this.showMessage("Activdad no permitida",false);
-                }
+        switch(this.activityType){
+            case "1":{
+                this.createCaptureBranch();
+                break;
+            }                
+            case "2":{
+                this.updateCaptureBranch();
+                break;
+            }                
+            default:{
+                this.showMessage("Activdad no permitida",false);
             }
         }
     }
 
     onDataSelected(element:any){
         const result:CaptureBranch = JSON.parse(JSON.stringify(element));
+        
+        this.activityType ="2";
+        this.labelButton ="Actulizar sucursal";
+
+        this.captureBranchForm= this.loadData(result);
+        this.captureBranchForm.get('active')?.setValue(result.active ? 'Y' : 'N');
+        this.captureBranchForm.get('branch')?.setValue(result.branch.toString());
     }
 
-    initForm():FormGroup{
-        return this.fb.group({
-            captureId:[this.activityType!=="2"?"":this.captureQuestionForm.value.captureId,[Validators.required]],
-            branch:[this.activityType!=="2"?"":this.captureQuestionForm.value.branch,[Validators.required]],
-            active:[this.activityType!=="2"?"":this.captureQuestionForm.value.active,[Validators.required]],
-        });
+    reset(){
+        this.setCreateData();
     }
 }

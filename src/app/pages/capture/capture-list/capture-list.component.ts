@@ -33,7 +33,7 @@ export class CaptureListComponent implements OnInit{
     }
 
     private setConfigItemTable():void{
-        this.configItemTable = ConfigComponents.ConfigTable("",this.totalItems,TableCaptureColumns.setCaptureConfigTableColumns(),true);
+        this.configItemTable = ConfigComponents.ConfigTable("",this.totalItems,TableCaptureColumns.setCaptureConfigTableColumns(),false,true);
     }
 
     private configFileAll(page:number,pageSize:number):void{
@@ -66,10 +66,9 @@ export class CaptureListComponent implements OnInit{
         });
     }
 
-
     onDataSelected(element:any):void{
-        const result:CaptureConfig = JSON.parse(JSON.stringify(element));
-        this.router.navigate(['capture-detail'],{queryParams:{activity:"2",data:result}});
+        const result = JSON.stringify(element);
+        this.router.navigate(['capture-detail'],{queryParams:{dataclient:result,created:"1"}});
     }
 
     onPageItemChanged(event:any):void{

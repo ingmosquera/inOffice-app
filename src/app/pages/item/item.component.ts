@@ -22,9 +22,9 @@ import { TableItemColumns } from "../../core/helpers/tableItemColumns";
 @Component({
     selector: 'app-item',
     templateUrl: './item.component.html',
-    styleUrl:"./item.component.scss",
+    styleUrl: "./item.component.scss",
     standalone: true,
-    imports: [SharedModule,MatExpansionModule,MatTabsModule]
+    imports: [SharedModule, MatExpansionModule, MatTabsModule]
 })
 
 export class ItemComponent implements OnInit {
@@ -49,6 +49,7 @@ export class ItemComponent implements OnInit {
     valueParameter!:string;
     selectedOption!:string;
     itemSelect!:string;
+    itemDetailUpdate!:DetailItem[]
     constructor(private itemService:ItemService, 
                 private dialog: MatDialog,
                 private clientService:ClientService){}
@@ -61,15 +62,15 @@ export class ItemComponent implements OnInit {
     }
 
     private setConfigItemTable():void{
-        this.configItemTable = ConfigComponents.ConfigTable("",this.totalItems,TableItemColumns.setItemTableColumns(),true);
+        this.configItemTable = ConfigComponents.ConfigTable("",this.totalItems,TableItemColumns.setItemTableColumns(),false,true);
     }
     
     private setConfigHistoryTable():void{
-        this.configHistoryTable = ConfigComponents.ConfigTable("",this.totalHistory,TableItemColumns.setHistoryItemTableColumns(),false);
+        this.configHistoryTable = ConfigComponents.ConfigTable("",this.totalHistory,TableItemColumns.setHistoryItemTableColumns(),false,false);
     }
 
     private setConfigRemittanceTable():void{
-        this.configRemittanceTable = ConfigComponents.ConfigTable("",this.totalRemittance,TableItemColumns.setRemittanceDetailTableColumns(),false);
+        this.configRemittanceTable = ConfigComponents.ConfigTable("",this.totalRemittance,TableItemColumns.setRemittanceDetailTableColumns(),false,false);
     }
     private setFiltervalue():void{
         this.valuesfilter="";
@@ -165,14 +166,13 @@ export class ItemComponent implements OnInit {
         });
 
         dialogRef.componentInstance.saveInfo.subscribe((data)=>{
-            console.log("Data para salvar",data);
-            this.dialog.open(DialogComponent,{
-                disableClose:false,
-                data:{
-                    title:"Actualización de item",
-                    message: `El item ${item}, fue actualizado sin novedad`,
-                    confirm:false
-                }
+            this.itemService.updateItemDetail(data).subscribe(
+                data => {
+                    this.showMessage(`El item ${item}, fue actualizado sin novedad`);
+                },
+                error => {
+                    const message = error.error.errorMessage==null?"Error al procesar la solicitd":error.error.errorMessage;
+                    this.showMessage(message);
             });
         });
     }
@@ -190,7 +190,7 @@ export class ItemComponent implements OnInit {
 
     onSelectionChangeFileds(){
         if (this.selectedClientValue!=null){
-            this.clientService.getFieldByClient(this.selectedClientValue).subscribe(data=>{
+            this.clientService.getListFieldByClient(this.selectedClientValue).subscribe(data=>{
                 this.selectedFieldClientValue = "";    
                 this.fieldByClient = data.result;
             },
@@ -230,35 +230,46 @@ export class ItemComponent implements OnInit {
         const idField = this.fieldByClient.filter((field:ClientField)=> field.name==this.selectedFieldClientValue)
                                             .map((field)=> field.id);                                            
         
+        const filedRealValue = idField[0] ==0?filedName:'value';
+        const valueParameter = filedRealValue=='value'?`${filedName} contiene ${this.valueParameter}`:`${filedName} = ${this.valueParameter}`;
         if (this.valuesfilter.length==0){
             if(this.selectedFieldClientValue.length >0 && this.valueParameter.length>0){
-                this.valuesfilter= `${clienteName} = ${this.selectedClientValue} ${this.selectedOption} ${filedName} = ${this.valueParameter}`;
+                this.valuesfilter= `${clienteName} = ${this.selectedClientValue} ${this.selectedOption} ${valueParameter}`;
             }else{
                 this.valuesfilter= `${clienteName} = ${this.selectedClientValue}`;
             }
         }
         else{
             if(this.selectedFieldClientValue.length >0 && this.valueParameter.length > 0){
-                this.valuesfilter=`${this.valuesfilter} and ${clienteName} = ${this.selectedClientValue} ${this.selectedOption} ${filedName} = ${this.valueParameter}`;
+                this.valuesfilter=`${this.valuesfilter} and ${clienteName} = ${this.selectedClientValue} ${this.selectedOption} ${valueParameter}`;
             }else{
                 this.valuesfilter= `${this.valuesfilter} and ${clienteName} = ${this.selectedClientValue}`;
             }
         }
-
+        
         if (this.hiddenfilter.length==0){
             if(this.selectedFieldClientValue.length >0 && this.valueParameter.length>0){
-                this.hiddenfilter= `idClient = '${this.selectedClientValue}' ${this.selectedOption} value = '${this.valueParameter}'  ${this.selectedOption} field=${idField[0]}`;
+                if (filedRealValue=='value'){
+                    this.hiddenfilter= `idClient = '${this.selectedClientValue}' ${this.selectedOption} ${filedRealValue} like '--${this.valueParameter}--'  ${this.selectedOption} field=${idField[0]}`;
+                }else
+                {
+                    this.hiddenfilter= `idClient = '${this.selectedClientValue}' ${this.selectedOption} ${filedRealValue} = '${this.valueParameter}'`;
+                }
             }else{
                 this.hiddenfilter= `idClient = '${this.selectedClientValue}'`;
             }
         }
         else{
             if(this.selectedFieldClientValue.length >0 && this.valueParameter.length > 0){
-                this.hiddenfilter=`${this.hiddenfilter} or idClient= '${this.selectedClientValue}' ${this.selectedOption} value= '${this.valueParameter}'  ${this.selectedOption} field=${idField[0]}`;
+                if (filedRealValue=='value'){
+                    this.hiddenfilter=`${this.hiddenfilter} or idClient= '${this.selectedClientValue}' ${this.selectedOption} ${filedRealValue} like '--${this.valueParameter}--'  ${this.selectedOption} field=${idField[0]}`;
+                }
+                
             }else{
                 this.hiddenfilter= `${this.hiddenfilter} or idClient = '${this.selectedClientValue}'`;
             }
         }
+        this.valueParameter="";
     }
 
     borrarFilter(){
@@ -266,9 +277,8 @@ export class ItemComponent implements OnInit {
     }
 
     getDataIntem():void{
-        
-        this.showItemData(pagination.PAGE_NUMBER,pagination.PAGE_SIZE)
+        this.showItemData(pagination.PAGE_NUMBER,pagination.PAGE_SIZE);
     }
 
-
+    
 }

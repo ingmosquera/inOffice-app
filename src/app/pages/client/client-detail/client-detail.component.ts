@@ -3,12 +3,15 @@ import { SharedModule } from "../../../core/shared/shared.module";
 import { FormBuilder, FormGroup, Validators } from "@angular/forms";
 import { MatDialog } from "@angular/material/dialog";
 import { DialogComponent } from "../../../core/shared/components/dialog/dialog.component";
-import { ActivatedRoute, Params } from "@angular/router";
-import { Client, ClientModel } from "../../../core/modules/client/client";
+import { ActivatedRoute, Params, Router } from "@angular/router";
+import { Client } from "../../../core/modules/client/client";
 import { ClientService } from "../../../services/clientService";
 import { ClientItemTypes } from "../client-item-type/client-item-type.component";
 import { ClientAddress } from "../client-address-request/client-address-request.component";
 import { ClientRequests } from "../client-request/client-request.component";
+import { ConfigureService } from "../../../services/configureService";
+import { Branch } from "../../../core/modules/configuration/conciguration";
+
 
 @Component({
     selector: 'app-detail-client',
@@ -24,27 +27,80 @@ export class ClientDetailComponent implements OnInit{
     panelOpenState:boolean = false;
     panelOpenDetailState:boolean = false;
     dataclient!:Client;
+    clientName:string ="";
+    isLoading:boolean = false;
+    showButton:boolean = false;
+    puedeEditar:boolean = false;
+    branchList!:Branch[];
 
     constructor(private readonly fb:FormBuilder,
                 private readonly dialog: MatDialog,
                 private readonly route: ActivatedRoute,
-                private readonly clientService: ClientService){}
+                private readonly clientService: ClientService,
+                private readonly router:Router,
+                private readonly configureService:ConfigureService){
+                }
     
     ngOnInit(): void {
         this.route.queryParams.subscribe((params:Params)=> {
-            this.activityType = params['activity'];
-            this.dataclient = params['dataclient'];
-        });
-        if (this.dataclient==undefined){
-            this.activityType ="1";
-        }
-        this.labelButton = this.activityType=="1"?"Crear Cliente": this.activityType=="2"?"Actualizar cliente":"";
+            if ('dataclient' in params)
+                this.dataclient =JSON.parse(params['dataclient'])
 
+            if ('created' in params){
+                this.showButton=true;
+                this.puedeEditar=false;    
+            }
+        });
+
+        if (this.dataclient ==undefined){
+            this.activityType ="1";
+            this.puedeEditar=true;
+        }else{
+            this.activityType ="2";
+            this.puedeEditar=false;
+        }
+        this.setCreateData();
+    }
+
+    private setCreateData():void{
+        this.activityType =this.activityType;
+        this.labelButton =this.activityType=="2"?"Actulizar Cliente" :"Crear Cliente";
         this.clienteAddForm = this.initForm();
+        if(this.dataclient!= undefined){
+            this.clientName = ' . '+this.dataclient.name;
+            this.clienteAddForm= this.loadData();
+            this.clienteAddForm.get('level')?.setValue(this.dataclient.level?.toString());
+            this.clienteAddForm.get('active')?.setValue(this.dataclient.active ? 'Y' : 'N');
+            this.clienteAddForm.get('branch')?.setValue(this.dataclient.branch?.toString());
+        }
+        this.configureService.getBranchAll().subscribe(
+            data=>{
+                this.branchList = data.result;
+            },
+            error => {
+                const message = error.error.errorMessage==null?"Error al procesar la solicitd":error.error.errorMessage;
+                this.showMessage(message,false);
+            });
+    }
+
+    private loadData():FormGroup{
+        return this.fb.group({
+            id:[this.dataclient.id ,[Validators.required]],
+            name:[this.dataclient.name,[Validators.required]],
+            address:[this.dataclient.address,[Validators.required]],
+            phone:[this.dataclient.phone,[Validators.required]],
+            contact:[this.dataclient.contact,[Validators.required]],
+            email:[this.dataclient.email,[Validators.required]],
+            branch:[this.dataclient.branch,[Validators.required]],
+            active:["",[Validators.required]],
+            level:[this.dataclient.level,[Validators.required]],
+            parent:[this.dataclient.parent,],
+        });
     }
 
     onSubmit(){
         switch(this.activityType){
+            
             case "1":{
                 this.createClient();
                 break;
@@ -54,19 +110,10 @@ export class ClientDetailComponent implements OnInit{
                 break;
             }                
             default:{
-                this.showMessage("Activdad no permitida",false);
+                this.showMessage("Activdad no permitida "+ this.activityType,false);
             }
         }
     }
-
-    sendClientModel(){
-        const data:ClientModel={
-            id : this.clienteAddForm.value.id,
-            name:this.clienteAddForm.value.name
-        }
-        this.clientService.setClietModel(data);
-    }
-
 
     private createClient():void{
         if (this.clienteAddForm.value.level!="1" && (this.clienteAddForm.value.parent == null ||  this.clienteAddForm.value.parent == "")){
@@ -76,11 +123,12 @@ export class ClientDetailComponent implements OnInit{
         }else{
             const dialogRef =  this.showMessage("Esta seguro que desea crear el cliente "+ 
                                             this.clienteAddForm.value.id +" "+ this.clienteAddForm.value.name,true);
+            const dataCliente = this.ClientDataCreate();
             dialogRef.componentInstance.confirmClik.subscribe(()=>{
-                this.clientService.CreateClient(this.ClientDataCreate()).subscribe(
+                this.clientService.CreateClient(dataCliente).subscribe(
                     data => {
-                        this.sendClientModel();
-                        this.showMessage(data.result,false);    
+                        this.showMessage(data.result,false);
+                        this.router.navigate(['client-detail'],{queryParams:{dataclient:dataCliente}});
                     },
                     error => {
                         const message = error.error.errorMessage==null?"Error al procesar la solicitd":error.error.errorMessage;
@@ -101,6 +149,7 @@ export class ClientDetailComponent implements OnInit{
             dialogRef.componentInstance.confirmClik.subscribe(()=>{
                 this.clientService.UpdateClient(this.ClientDataCreate()).subscribe(
                     data => {
+                        this.refreshPage(this.ClientDataCreate());
                         this.showMessage(data.result,false);    
                     },
                     error => {
@@ -120,7 +169,7 @@ export class ClientDetailComponent implements OnInit{
             contact:this.clienteAddForm.value.contact,
             email:this.clienteAddForm.value.email,
             branch:this.clienteAddForm.value.branch,
-            active:this.clienteAddForm.value.active,
+            active:this.clienteAddForm.value.active=="Y"?true:false,
             level:this.clienteAddForm.value.level,
             parent:this.clienteAddForm.value.parent,
             userCreated:"User Id",
@@ -136,16 +185,16 @@ export class ClientDetailComponent implements OnInit{
     
     private initForm():FormGroup{
         return this.fb.group({
-            id:[this.activityType!=="2"?"":this.dataclient.id,[Validators.required]],
-            parent:[this.activityType!=="2"?"":this.dataclient.parent,],
-            name:[this.activityType!=="2"?"":this.dataclient.name,[Validators.required]],
-            address:[this.activityType!=="2"?"":this.dataclient.address,[Validators.required]],
-            contact:[this.activityType!=="2"?"":this.dataclient.contact,[Validators.required]],
-            email:[this.activityType!=="2"?"":this.dataclient.email,[Validators.required]],
-            phone:[this.activityType!=="2"?"":this.dataclient.phone,[Validators.required]],
-            level:[this.activityType!=="2"?"":this.dataclient.level,[Validators.required]],
-            branch:[this.activityType!=="2"?"":this.dataclient.branch,[Validators.required]],
-            active:[this.activityType!=="2"?"":this.dataclient.active,[Validators.required]],
+            id:[,[Validators.required]],
+            parent:["",],
+            name:["",[Validators.required]],
+            address:["",[Validators.required]],
+            contact:["",[Validators.required]],
+            email:["",[Validators.required]],
+            phone:["",[Validators.required]],
+            level:["",[Validators.required]],
+            branch:["",[Validators.required]],
+            active:["",[Validators.required]],
         });
     }
 
@@ -157,6 +206,18 @@ export class ClientDetailComponent implements OnInit{
                 message:message,
                 confirm:confirm
             }
+        });
+    }
+
+    newClient(){
+        this.router.navigateByUrl('/', {skipLocationChange: true}).then(() => {
+            this.router.navigate(['client-detail']);
+        });
+    }
+
+    private refreshPage(dataFile:Client){
+        this.router.navigateByUrl('/', {skipLocationChange: true}).then(() => {
+            this.router.navigate(['client-detail'],{queryParams:{dataclient:JSON.stringify(dataFile),created:"1"}});
         });
     }
 }

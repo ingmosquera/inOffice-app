@@ -1,38 +1,48 @@
-<app-spinner></app-spinner>
-<form (ngSubmit)="onSubmit()" [formGroup]="fileBranchForm" class="mt-4">
-    <div fxLayout="row wrap" fxLayoutGap="16px">
-        <mat-form-field fxFlex="10%">
-            <mat-label>Id</mat-label>
-            <input type="number" matInput placeholder="Id" formControlName="configFileId">
-        </mat-form-field>
-        
-        
-        <mat-form-field fxFlex="20%">
-            <mat-label>Sucursal</mat-label>
-            <mat-select formControlName="branch">
-                <mat-option value="1">Bogotá</mat-option>
-                <mat-option value="2">Cali</mat-option>
-                <mat-option value="3">Medellin</mat-option>
-            </mat-select>
-        </mat-form-field>
-
-        <div fxFlex="20%">
-            <div style="margin-top:5%;">
-                <label>Activo: </label>
-                <mat-radio-group formControlName="active">
-                    <mat-radio-button value="Y">Si</mat-radio-button>
-                    <mat-radio-button value="N">No</mat-radio-button>
-                </mat-radio-group>
+<ng-container *ngIf="this.showBranch">
+    <form [formGroup]="fileBranchForm" class="mt-4">
+        <div fxLayout="row wrap" fxLayoutGap="16px">
+            <mat-form-field fxFlex="10%">
+                <mat-label>Id</mat-label>
+                <input type="number" matInput placeholder="Id" formControlName="id" readonly>
+            </mat-form-field>
+            
+            
+            <mat-form-field fxFlex="20%">
+                <mat-label>Sucursal</mat-label>
+                <mat-select formControlName="branch">
+                    @for (branch of branchList; track branch) {
+                        <mat-option [value]="branch.id">{{branch.name}}</mat-option>
+                      }
+                </mat-select>
+            </mat-form-field>
+    
+            <div fxFlex="20%">
+                <div style="margin-top:5%;">
+                    <label>Activo: </label>
+                    <mat-radio-group formControlName="active">
+                        <mat-radio-button value="Y">Si</mat-radio-button>
+                        <mat-radio-button value="N">No</mat-radio-button>
+                    </mat-radio-group>
+                </div>
             </div>
         </div>
-    </div>
-    <button mat-raised-button color="primary" class="float-center" [disabled]="fileBranchForm.invalid">{{labelButton}}</button>
-    <h5>Los campos con * (asterisco) son obligatorios</h5>
-</form>
+        <button mat-raised-button color="primary"  (click)="onSubmit()" style="margin-right:3%" class="float-center" [disabled]="fileBranchForm.invalid">{{labelButton}}</button>
+        <button mat-raised-button color="accent" class="float-center" (click)="reset()">Cancelar</button>
+        <h5>Los campos con * (asterisco) son obligatorios</h5>
+    </form>
+    
+    <app-table class="mt-4"
+            [configTable] ="configItemTable"
+            [tableData] ="dataSourceItem"
+            [loadingData] = "loadingData"
+            (dataSelected) = "onDataSelected($event)">
+    </app-table>
+</ng-container>
+<ng-container *ngIf="!this.showBranch">
+    <h3> 
+        La configuración del capturador no aplica para gestionar Sucurslaes, por lo tanto no se crean parámetros de configuración.<br>
+        Si desa adicionar estos parametros debe cambiar la configuración del capturador a Sucursales para que sea visible.
+    </h3>
+</ng-container>
 
-<app-table class="mt-4"
-        [configTable] ="configItemTable"
-        [tableData] ="dataSourceItem"
-        [loadingData] = "loadingData"
-        (dataSelected) = "onDataSelected($event)">
-</app-table>
+

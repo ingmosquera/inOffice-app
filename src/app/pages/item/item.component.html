@@ -49,12 +49,12 @@
       <p hidden>{{hiddenfilter}}</p>
 
       <div class="text-center">
-        <button mat-raised-button color="accent" class="mb-3" (click)="borrarFilter();">Borrar</button>
-        <button mat-raised-button color="primary" class="button-space mb-3" (click)="getDataIntem()">Consultar</button>
+        <button mat-raised-button color="primary" (click)="getDataIntem()">Consultar</button>
+        <button mat-raised-button color="accent" class="button-space" (click)="borrarFilter();">Borrar</button>
       </div>
     </mat-expansion-panel>
   </mat-accordion>
-
+  
   <mat-tab-group preserveContent class="tab-group-top">
     <mat-tab label="Item">
       <app-table 
@@ -81,4 +81,6 @@
         (pageChanged)="onPageRemittanceChanged($event)">
       </app-table>
     </mat-tab>
+
+
   </mat-tab-group>

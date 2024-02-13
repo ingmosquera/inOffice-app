@@ -22,15 +22,15 @@
 
             <mat-form-field fxFlex="20%">
                 <mat-label>Descripción</mat-label>
-                <input matInput placeholder="Descripción" formControlName="name" readonly>
+                <input matInput placeholder="Descripción" formControlName="name" >
             </mat-form-field>
 
             <mat-form-field fxFlex="25%">
               <mat-label>Cliente</mat-label>
               <mat-select formControlName="client">
-                  <mat-option value="1">Cliente Demos</mat-option>
-                  <mat-option value="2">Ciente Demo 1</mat-option>
-                  <mat-option value="3">Cliente Demo 2</mat-option>
+                @for (client of clientList; track client) {
+                  <mat-option [value]="client.id">{{client.name}}</mat-option>
+                }
               </mat-select>
             </mat-form-field>
 
@@ -44,19 +44,20 @@
 
             <mat-form-field fxFlex="15%">
                 <mat-label>Archivo Cargue</mat-label>
-                <mat-select formControlName="configfileId">
-                    <mat-option value="1">Cargue 1</mat-option>
-                    <mat-option value="2">Cargue 2</mat-option>
-                    <mat-option value="3">Cargue  3</mat-option>
+                <mat-select formControlName="configFile">
+                  <mat-option value=""></mat-option>
+                  @for (file of loadFileConfigList; track file) {
+                    <mat-option [value]="file.id">{{file.name}}</mat-option>
+                  }
                 </mat-select>
             </mat-form-field>
 
             <mat-form-field fxFlex="15%">
               <mat-label>Línea</mat-label>
               <mat-select formControlName="line">
-                  <mat-option value="1">Archivo Físico</mat-option>
-                  <mat-option value="2">Títulos Valores</mat-option>
-                  <mat-option value="3">Médios magnéticos</mat-option>
+                @for (itemLine of lineList; track itemLine) {
+                  <mat-option [value]="itemLine.id">{{itemLine.name}}</mat-option>
+                }
               </mat-select>
             </mat-form-field>
 
@@ -79,7 +80,8 @@
                 </div>
             </div>
         </div>
-        <button mat-raised-button color="primary" class="float-center" [disabled]="CaptureConfigForm.invalid">{{labelButton}}</button>
+        <button mat-raised-button color="primary"  style="margin-right:3%" class="float-center" (click)="onSubmit()" [disabled]="CaptureConfigForm.invalid">{{labelButton}}</button>
+        <button *ngIf="showButton"  mat-raised-button color="accent" class="float-center" (click)="newCapture()">Crear captura</button>
         <h5>Los campos con * (asterisco) son obligatorios</h5>
     </form>
     </mat-expansion-panel>
