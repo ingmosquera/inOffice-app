@@ -23,9 +23,9 @@
             <mat-form-field fxFlex="25%">
               <mat-label>Cliente</mat-label>
               <mat-select formControlName="client">
-                  <mat-option value="9958">Cliente Demos</mat-option>
-                  <mat-option value="1">Ciente Demo 1</mat-option>
-                  <mat-option value="2">Cliente Demo 2</mat-option>
+                @for (client of clientList; track client) {
+                  <mat-option [value]="client.id">{{client.name}}</mat-option>
+                }
               </mat-select>
             </mat-form-field>
 
@@ -37,8 +37,9 @@
             <mat-form-field fxFlex="15%">
               <mat-label>Línea</mat-label>
               <mat-select formControlName="line">
-                  <mat-option value="1">Archivo Físico</mat-option>
-                  <mat-option value="2">Títulos Valores</mat-option>
+                @for (itemLine of lineList; track itemLine) {
+                  <mat-option [value]="itemLine.id">{{itemLine.name}}</mat-option>
+                }
               </mat-select>
             </mat-form-field>
 

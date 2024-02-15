@@ -8,6 +8,10 @@ import { DialogComponent } from "../../../core/shared/components/dialog/dialog.c
 import { MatDialog } from "@angular/material/dialog";
 import { ActivatedRoute, Params, Router } from "@angular/router";
 import { ConfigFileService } from "../../../services/configFileService";
+import { ConfigureService } from "../../../services/configureService";
+import { ClientService } from "../../../services/clientService";
+import { Client } from "../../../core/modules/client/client";
+import { Line } from "../../../core/modules/configuration/conciguration";
 
 @Component({
     selector: "app-file-config",
@@ -25,12 +29,16 @@ export class LoadFileConfigComponent implements OnInit{
     dataLoad!:LoadFileConfig;
     showButton:boolean = false;
     puedeEditar:boolean = false;
+    clientList!:Client[];
+    lineList!:Line[]
 
     constructor(private readonly fb:FormBuilder,
                 private readonly dialog:MatDialog,
                 private readonly route:ActivatedRoute,
                 private readonly configFileService:ConfigFileService,
-                private readonly router:Router){
+                private readonly router:Router,
+                private readonly clientService:ClientService,
+                private readonly configureService:ConfigureService){
 
     }
     ngOnInit(): void {
@@ -53,8 +61,30 @@ export class LoadFileConfigComponent implements OnInit{
         }
 
         this.setCreateData();
+        this.loadList();
     }
 
+    private loadList():void{
+        this.clientService.getClientActive().subscribe(
+            data => {
+                this.clientList = data.result;
+            },
+            error => {
+                const message = error.error.errorMessage==null?"Error al listar los clientes":error.error.errorMessage;
+                this.showMessage(message,false);
+            });
+        
+
+        this.configureService.getLineAll().subscribe(
+            data => {
+                this.lineList = data.result;
+            },
+            error => {
+                const message = error.error.errorMessage==null?"Error al listar las lineas":error.error.errorMessage;
+                this.showMessage(message,false);
+            });
+
+    }
     private setCreateData():void{
         this.activityType =this.activityType;
         this.labelButton =this.activityType=="2"?"Actulizar archivo" :"Crear archivo";
