@@ -46,6 +46,12 @@ export class ClientService{
         return this.http.get<ApiResponse<ListPaginationResponse<ClientAddressRequest[]>>>(Url);
     }
 
+    getAddressActiveByClient(idClient:string):Observable<ApiResponse<ClientAddressRequest[]>>{
+        const Url = `${environment.URLAPICLIENT}/${this.method}/getAddressRequestActive?idClient=${idClient}`
+        return this.http.get<ApiResponse<ClientAddressRequest[]>>(Url);
+    }
+
+
     CreateAddressClient(dataClient:ClientAddressRequest):Observable<ApiResponse<string>>{
         const Url = `${environment.URLAPICLIENT}/${this.method}/createAddressRequest`
         return this.http.post<ApiResponse<string>>(Url,dataClient);
@@ -76,6 +82,11 @@ export class ClientService{
         return this.http.get<ApiResponse<ListPaginationResponse<ClientRequest[]>>>(Url);
     }
 
+
+    getRequestActiveByClient(idClient:string):Observable<ApiResponse<ClientRequest[]>>{
+        const Url = `${environment.URLAPICLIENT}/${this.method}/getRequestActive?idClient=${idClient}`
+        return this.http.get<ApiResponse<ClientRequest[]>>(Url);
+    }
     CreateRequestClient(dataClient:ClientRequest):Observable<ApiResponse<string>>{
         const Url = `${environment.URLAPICLIENT}/${this.method}/createRequest`
         return this.http.post<ApiResponse<string>>(Url,dataClient);

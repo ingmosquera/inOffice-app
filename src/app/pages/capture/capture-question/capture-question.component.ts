@@ -56,7 +56,6 @@ export class QuestionDetailComponent implements OnInit,AfterViewInit{
         this.captureService.getCaptureFiledList(idCapture).subscribe(
             data => {
                 this.filedCaptureList = data.result;
-                console.log("idCaptures ",this.filedCaptureList);
             });
     }
 

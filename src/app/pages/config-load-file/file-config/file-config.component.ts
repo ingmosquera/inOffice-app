@@ -30,7 +30,7 @@ export class LoadFileConfigComponent implements OnInit{
     showButton:boolean = false;
     puedeEditar:boolean = false;
     clientList!:Client[];
-    lineList!:Line[]
+    lineList!:Line[];
 
     constructor(private readonly fb:FormBuilder,
                 private readonly dialog:MatDialog,

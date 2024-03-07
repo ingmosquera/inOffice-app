@@ -34,7 +34,17 @@
         </mat-cell>
       </ng-container>
     </ng-container>
-
+    
+    <ng-container *ngIf="configTable.removeRow">
+      <ng-container matColumnDef="remove">
+        <mat-header-cell *matHeaderCellDef>Quitar</mat-header-cell>
+        <mat-cell *matCellDef="let element">
+          <button mat-icon-button (click)="deleteDetail(element)">
+            <mat-icon>remove</mat-icon>
+          </button>
+        </mat-cell>
+      </ng-container>
+    </ng-container>
     <ng-container *ngIf="configTable.showDetails">
       <ng-container matColumnDef="edit">
         <mat-header-cell *matHeaderCellDef>Editar</mat-header-cell>
