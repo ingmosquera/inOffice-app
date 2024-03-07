@@ -7,6 +7,7 @@ export class ConfigComponents{
                        tableColumns: TableColumn[],
                        editTable:boolean,
                        showDetails:boolean = false,
+                       removeRowTable:boolean=false,
                        pageSize:number = pagination.PAGE_SIZE,
                        showPageSizeOptions:number[] = pagination.PAGE_SHOW_PAGE_SIZE):TableConfig{
             return {
@@ -16,7 +17,8 @@ export class ConfigComponents{
                 showDetails:showDetails,
                 showPageSizeOptions:showPageSizeOptions,
                 tableColumns:tableColumns,
-                updateData:editTable
+                updateData:editTable,
+                removeRow:removeRowTable
             }
    }
 }

@@ -132,7 +132,6 @@ export class LoadFileBranchComponent implements OnInit,AfterViewInit{
         dialogRef.componentInstance.confirmClik.subscribe(()=>{
             let client = this.getData();
             client.id = this.fileBranchForm.value.id;
-            console.log("Mi configuracion para enviar es ",client);
             this.configFileService.updateConfigFileBranch(client).subscribe(
                 data => {
                     this.getFileBranch(this.dataclient.id!,pagination.PAGE_NUMBER,pagination.PAGE_SIZE);

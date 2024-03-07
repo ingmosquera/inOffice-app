@@ -1,0 +1,42 @@
+<h1 style="margin-top: 1%;" class="text-center">Otros servicios</h1>
+
+<form [formGroup]="newNoItemRowForm" style="margin-left: 20%;">
+    <div fxLayout="row wrap" fxLayoutGap="16px">
+        <mat-form-field fxFlex="20%">
+            <mat-label>Tipo</mat-label>
+            <mat-select formControlName="noItemType">
+                <mat-option value=""></mat-option>
+                @for (noItemType of noItemTypeList; track noItemType) {
+                    <mat-option [value]="noItemType.value">{{noItemType.name}}</mat-option>
+                  }
+            </mat-select>
+        </mat-form-field>
+        
+        <mat-form-field fxFlex="10" [hidden]="true">
+            <mat-label>IdRemittance</mat-label>
+            <input matInput placeholder="idRemittance" formControlName="idRemittance" readonly>
+        </mat-form-field>
+
+        <mat-form-field fxFlex="20%">
+            <mat-label>Cantidad</mat-label>
+            <input matInput type="number" placeholder="cantidad" formControlName="quantity">
+        </mat-form-field>
+        <div style="width: 35%; ">
+            <button mat-raised-button color="primary" (click)="addRow()" style="margin-right: 4%; margin-top: 4%;" class="float-center"[disabled]="newNoItemRowForm.invalid">{{labelButton}}</button>
+        </div>
+    </div>
+</form>
+
+<app-table class="mt-4"
+    [configTable] ="configItemTable"
+    [tableData] ="dataSourceNoitem"
+    [loadingData] = "loadingData"
+    (pageChanged)="onPageItemChanged($event)"
+    (dataSelected) = "onDataSelected($event)"
+    (deleteSelected) = "onDeleteRow($event)"
+    >
+</app-table>
+
+<div style="text-align: center">
+    <button mat-raised-button color="primary" style="margin-right:3%" (click)="onSubmit()" class="float-center">Adicionar NoItems a Remesa</button>
+</div>

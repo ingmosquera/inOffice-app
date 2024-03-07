@@ -18,20 +18,21 @@ import { CommonModule } from "@angular/common";
 import { MatPaginatorModule,MatPaginatorIntl } from "@angular/material/paginator";
 import { MatPaginatorIntEs } from "../helpers/matPaginatorIntEs";
 import { MatDividerModule } from '@angular/material/divider';
-import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
+import { MatDialogModule } from '@angular/material/dialog';
 import { MatSortModule } from "@angular/material/sort";
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { MatSelectModule } from '@angular/material/select';
 import { MatRadioModule } from '@angular/material/radio';
 import { MatTabsModule } from '@angular/material/tabs';
-
+import {MatDatepickerModule} from '@angular/material/datepicker';
 import { SpinnerComponent } from "./components/spinner/spinner.component";
 import { NotFoundComponent } from "./components/not-found/not-found.component";
 import { DialogComponent } from "./components/dialog/dialog.component";
 import { TableComponent } from "./components/table/table.component";
 import { ButtonsComponent } from "./components/buttons/buttons.component";
 import { DialogOverViewComponent } from "./components/dialog-overview/dialog-overview.component";
+import {MatNativeDateModule} from '@angular/material/core';
 
 @NgModule({
     imports:[
@@ -62,6 +63,8 @@ import { DialogOverViewComponent } from "./components/dialog-overview/dialog-ove
         MatRadioModule,
         MatTabsModule,
         SpinnerComponent,
+        MatDatepickerModule,
+        MatNativeDateModule,
     ],
     declarations:[
         NotFoundComponent
@@ -98,6 +101,8 @@ import { DialogOverViewComponent } from "./components/dialog-overview/dialog-ove
         MatRadioModule,
         MatTabsModule,
         SpinnerComponent,
+        MatDatepickerModule,
+        MatNativeDateModule,
     ],
     providers:[
         { provide: MatPaginatorIntl, useClass:MatPaginatorIntEs },

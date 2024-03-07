@@ -28,6 +28,7 @@ export class TableComponent implements OnInit,AfterViewInit    {
   @Input() loadingData:boolean=false;
   @Output() pageChanged = new EventEmitter<PageEvent>();
   @Output() dataSelected = new EventEmitter<any>();
+  @Output() deleteSelected = new EventEmitter<any>();
   @ViewChild(MatPaginator) paginator!:MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
 
@@ -40,6 +41,10 @@ export class TableComponent implements OnInit,AfterViewInit    {
 
     if(this.configTable.updateData)
       this.displayedColumns.push("edit");
+
+    if(this.configTable.removeRow)
+      this.displayedColumns.push("remove");
+
   }
 
   ngAfterViewInit() {
@@ -61,6 +66,10 @@ export class TableComponent implements OnInit,AfterViewInit    {
 
   showDetails(element:any){
     this.dataSelected.emit(element);
+  }
+
+  deleteDetail(element:any){
+    this.deleteSelected.emit(element);
   }
 
   announceSortChange(sortState: Sort) {

@@ -5,8 +5,10 @@ export interface TableConfig {
     totalItems:number;
     showDetails:boolean;
     updateData:boolean;
-    showPageSizeOptions:number[]
-    tableColumns:TableColumn[]
+    removeRow:boolean;
+    showPageSizeOptions:number[];
+    tableColumns:TableColumn[];
+    
 }
 
 export interface TableColumn{

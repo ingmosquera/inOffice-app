@@ -20,7 +20,7 @@ import { ChangePasswordComponent } from "./changePassword/changePassword.compone
         MatToolbarModule,
         MatSidenavModule,
         MatButtonModule,
-        MatFormFieldModule,
+        MatFormFieldModule
     ],
     declarations:[
         PublicComponent,

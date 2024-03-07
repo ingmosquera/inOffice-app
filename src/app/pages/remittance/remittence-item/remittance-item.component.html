@@ -1,0 +1,51 @@
+<h1 style="margin-top: 1%;" class="text-center">Detalle de item</h1>
+<form [formGroup]="newItemRowForm">
+    <div fxLayout="row wrap" fxLayoutGap="16px">
+        <mat-form-field fxFlex="10" [hidden]="true">
+            <mat-label>Id</mat-label>
+            <input matInput placeholder="id" formControlName="id"  readonly>
+        </mat-form-field>
+        
+        <mat-form-field fxFlex="10" [hidden]="true">
+            <mat-label>IdRemittance</mat-label>
+            <input matInput placeholder="idRemittance" formControlName="idRemittance"  readonly>
+        </mat-form-field>
+
+        <mat-form-field fxFlex="20%">
+            <mat-label>Item</mat-label>
+            <input matInput placeholder="item" formControlName="item">
+        </mat-form-field>
+        <mat-form-field fxFlex="20%">
+            <mat-label>Sal. Permanente</mat-label>
+            <mat-select formControlName="permanentOut">
+                <mat-option value="Y">Si</mat-option>
+                <mat-option value="N">No</mat-option>
+            </mat-select>
+        </mat-form-field>
+
+        <mat-form-field fxFlex="20%">
+            <mat-label>Destrucción</mat-label>
+            <mat-select formControlName="destroyed">
+                <mat-option value="Y">Si</mat-option>
+                <mat-option value="N">No</mat-option>
+            </mat-select>
+        </mat-form-field>
+        <div style="width: 35%; ">
+            <button mat-raised-button color="primary" (click)="addRow()" style="margin-right: 4%; margin-top: 2%;" class="float-center"[disabled]="newItemRowForm.invalid">{{labelButton}}</button>
+        </div>
+    </div>
+</form>
+
+<app-table class="mt-4"
+    [configTable] ="configItemTable"
+    [tableData] ="dataSourceRemittance"
+    [loadingData] = "loadingData"
+    (pageChanged)="onPageItemChanged($event)"
+    (dataSelected) = "onDataSelected($event)"
+    (deleteSelected) = "onDeleteRow($event)"
+    >
+</app-table>
+
+<div style="text-align: center">
+    <button mat-raised-button color="primary" style="margin-right:3%" (click)="onSubmit()" class="float-center">Adicionar items a Remesa</button>
+</div>
