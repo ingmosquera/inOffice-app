@@ -1,0 +1,99 @@
+<h1 style="margin-top: 1%;" class="text-center">CAPTURA DE INFORMACIÓN</h1>
+<form [formGroup]="searchCaptureForm" >
+    <div fxLayout="row wrap" fxLayoutGap="16px">
+        <mat-form-field fxFlex="25%">
+            <mat-label>Radicado</mat-label>
+            <input matInput placeholder="Radicado" formControlName="radicado">
+        </mat-form-field>
+        <div style="width: 35%; ">
+            <button mat-raised-button color="primary" (click)="search()" style="margin-right: 4%; margin-top: 2%;" class="float-center"[disabled]="captureForm.invalid">Consultar</button>
+        </div>
+    </div>
+</form>
+<div *ngIf="hasItemType">
+    <mat-card style="width: 100%;">
+        <mat-card-header>
+          <mat-card-title>Tipos de item de captura</mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+            <div fxLayout="row wrap" fxLayoutGap="16px">
+                <mat-form-field>
+                    <mat-label>Tipo Item</mat-label>
+                    <mat-select [(ngModel)]="selectedItemTypeValue" name="Itemtype" (selectionChange)="onSelectionItemType()">
+                            @for (type of itemTypeList; track type) {
+                                <mat-option [value]="type.itemType ">{{type.itemTypeName}}</mat-option>
+                            }
+                    </mat-select>
+                </mat-form-field>
+                <mat-form-field class="finder-header" class="category-select" style="margin-left:2%;">
+                    <mat-icon matPrefix>wrap_text</mat-icon>
+                    <mat-label>Código Barras</mat-label>
+                    <input matInput [(ngModel)]="itemCode" placeholder="Código barras">
+                </mat-form-field>
+                <div *ngIf="isParent">
+                    <mat-form-field class="finder-header" class="category-select" style="margin-left:2%;">
+                        <mat-icon matPrefix>wrap_text</mat-icon>
+                        <mat-label>Código Padre</mat-label>
+                        <input matInput [(ngModel)]="itemCodeParent" placeholder="Código padre">
+                    </mat-form-field>
+                </div>
+            </div>
+        </mat-card-content>
+    </mat-card>
+</div>
+
+<div *ngIf="hasData">
+    <div class="text-center">
+        <p>Capturador:{{this.captureDataConfig.captureConfig.captureName}}</p>
+        <div *ngIf="this.captureDataConfig.captureConfig.configFile==0">
+            <p>Arcivo plano : No</p>
+        </div>
+        <div *ngIf="this.captureDataConfig.captureConfig.configFile==1">
+            <p>Arcivo plano : Si</p>
+        </div>
+    </div>
+    <form [formGroup]="captureForm" (ngSubmit)="onSubmit()">
+        <div fxLayout="row wrap" fxLayoutGap="16px">
+            <mat-card style="width: 100%;">
+                <mat-card-header>
+                  <mat-card-title>Campos de captura documento</mat-card-title>
+                </mat-card-header>
+                <mat-card-content>
+                    <ng-container *ngFor="let field of captureDataConfig?.captureField" >
+                        <mat-form-field fxFlex="25%" style="margin-left:2%;">
+                            <mat-label>{{field.fieldName}}</mat-label>
+                            <input matInput [formControlName]="field.idField+'-CAP'" placeholder="{{ field.fieldName }}">
+                        </mat-form-field>
+                    </ng-container>
+                </mat-card-content>
+            </mat-card>
+            <br>
+            <mat-card style="width: 100%;">
+                <mat-card-header>
+                  <mat-card-title>Preguntas documento</mat-card-title>
+                </mat-card-header>
+                <mat-card-content>
+                    <ng-container *ngFor="let question of captureDataConfig?.captureQuestion">
+                        <div fxFlex="25%">
+                            <div style="margin-top: 5%;">
+                                <label>{{question.captureQuestion}}</label>
+                                <mat-radio-group [formControlName]="question.idCapture+'-PRE'">
+                                    <mat-radio-button value="Y">Si</mat-radio-button>
+                                    <mat-radio-button value="N">No</mat-radio-button>
+                                </mat-radio-group>
+                            </div>
+                        </div>
+                    </ng-container>
+                </mat-card-content>
+            </mat-card>
+        </div>
+        <div style="width: 35%; ">
+            <button mat-raised-button color="primary" (click)="onSubmit()" style="margin-right: 4%; margin-top: 2%;" class="float-center"[disabled]="captureForm.invalid">Guardar</button>
+        </div>
+    </form>
+</div>
+<div *ngIf="!hasData">
+    <div class="text-center">
+        <p class="text-center">Sin información para mostrar</p>
+    </div>
+</div>

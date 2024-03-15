@@ -32,6 +32,8 @@ export interface CaptureDetail{
     field:string,
     itemtype:string,
     itemTypeName?:string,
+    itemtypeParent:string,
+    itemTypeParentName?:string,
     fieldtype:string,
     fieldTypeName?:string,
     required:boolean,

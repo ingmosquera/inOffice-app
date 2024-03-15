@@ -25,3 +25,13 @@ export interface MovementItem extends BaseItem{
     oldValue:string,
     newValue:string
 }
+
+export interface ItemCapture extends BaseItem{
+    idField:number,
+    value:string
+}
+
+export interface ItemQuestionCapture extends BaseItem{
+    idQuestion:number,
+    value:string
+}
