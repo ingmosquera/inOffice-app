@@ -28,4 +28,6 @@ export class InventoryArchivingComponent implements OnInit{
             itemParent:["",""],
         });
     }
+
+    addRow(){}
 }

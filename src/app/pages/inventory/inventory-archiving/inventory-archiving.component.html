@@ -1,2 +1,23 @@
 <h1 style="margin-top: 1%;" class="text-center">ARCHIVO</h1>
 
+<form [formGroup]="archivingForm">
+    <div fxLayout="row wrap" fxLayoutGap="16px">
+        <mat-form-field fxFlex="20%" [hidden]="true">
+            <mat-label>Ubicacion</mat-label>
+            <input matInput placeholder="Ubicacion" formControlName="ubication" >
+        </mat-form-field>
+
+        <mat-form-field fxFlex="20%">
+            <mat-label>Item</mat-label>
+            <input matInput placeholder="item" formControlName="item">
+        </mat-form-field>
+
+        <mat-form-field fxFlex="20%">
+            <mat-label>Código padre</mat-label>
+            <input matInput placeholder="item" formControlName="itemParent">
+        </mat-form-field>
+        <div style="width: 35%; ">
+            <button mat-raised-button color="primary" (click)="addRow()" style="margin-right: 4%; margin-top: 2%;" class="float-center"[disabled]="archivingForm.invalid">Adicionar a lista</button>
+        </div>
+    </div>
+</form>
