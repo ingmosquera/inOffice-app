@@ -33,6 +33,7 @@ import { TableComponent } from "./components/table/table.component";
 import { ButtonsComponent } from "./components/buttons/buttons.component";
 import { DialogOverViewComponent } from "./components/dialog-overview/dialog-overview.component";
 import {MatNativeDateModule} from '@angular/material/core';
+import {MatCardModule} from '@angular/material/card';
 
 @NgModule({
     imports:[
@@ -48,6 +49,7 @@ import {MatNativeDateModule} from '@angular/material/core';
         MatSidenavModule,
         MatButtonModule,
         MatTreeModule,
+        MatCardModule,
         ButtonsComponent,
         TableComponent,
         CommonModule,
@@ -85,6 +87,7 @@ import {MatNativeDateModule} from '@angular/material/core';
         MatSidenavModule,
         MatButtonModule,
         MatTreeModule,
+        MatCardModule,
         ButtonsComponent,
         MatTableModule,
         TableComponent,

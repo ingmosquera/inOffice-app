@@ -126,6 +126,7 @@ export class CaptureDetailComponent implements OnInit,AfterViewInit{
             capture:this.dataclient.id! ,
             field:this.captureDetailForm.value.field,
             itemtype:this.captureDetailForm.value.itemType,
+            itemtypeParent:this.captureDetailForm.value.itemParent,
             fieldtype:this.captureDetailForm.value.fieldType,
             required:this.captureDetailForm.value.required=="Y"?true:false,
             active:this.captureDetailForm.value.active=="Y"?true:false,

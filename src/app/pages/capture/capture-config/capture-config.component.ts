@@ -15,12 +15,13 @@ import { Client } from "../../../core/modules/client/client";
 import { Line } from "../../../core/modules/configuration/conciguration";
 import { ConfigFileService } from "../../../services/configFileService";
 import { LoadFileConfig } from "../../../core/modules/loadfile/loadfile";
+import { CaptureDataComponent } from "../capture-data/capture-data.component";
 
 @Component({
     selector: "app-capture-config",
     templateUrl: "./capture-config.component.html",
     standalone: true,
-    imports: [SharedModule, CaptureDetailComponent, QuestionDetailComponent, CaptureBrachComponent]
+    imports: [SharedModule, CaptureDetailComponent, QuestionDetailComponent, CaptureBrachComponent,CaptureDataComponent]
 })
 export class CaptureConfigComponent implements OnInit{
     panelOpenState:boolean=false;

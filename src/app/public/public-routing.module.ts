@@ -12,6 +12,8 @@ import { LoadFileListComponent } from "../pages/config-load-file/file-list/file-
 import { CaptureListComponent } from "../pages/capture/capture-list/capture-list.component";
 import { RemittanceDetailComponent } from "../pages/remittance/remittance-detail/remittance-detail.component";
 import { RemittanceListComponent } from "../pages/remittance/remittance-list/remittance-list.component";
+import { CaptureDataComponent } from "../pages/capture/capture-data/capture-data.component";
+import { InventoryArchivingComponent } from "../pages/inventory/inventory-archiving/inventory-archiving.component";
 const routes : Routes = [
   { path: 'changePassword', component: ChangePasswordComponent },
   { path:'',
@@ -25,9 +27,10 @@ const routes : Routes = [
         { path:'load-file-detail', component: LoadFileConfigComponent,data: { dataclient: {} }},
         { path:'capture-list', component: CaptureListComponent},
         { path:'capture-detail', component: CaptureConfigComponent,data: { dataclient: {} }},
+        { path:'data-capture', component: CaptureDataComponent},
         { path:'remittance-list', component: RemittanceListComponent},
         { path:'remittance-detail', component: RemittanceDetailComponent,data: { dataclient: {} }},
-        
+        { path:'inventory-archiving', component: InventoryArchivingComponent},
     ]
   }  
 ]
